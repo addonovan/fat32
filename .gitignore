@@ -1,0 +1,7 @@
+# compiled things
+bin/*
+obj/*
+
+# vim turds
+*.sw[a-zA-Z]
+
