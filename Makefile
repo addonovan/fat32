@@ -6,56 +6,45 @@ TEST 	:= test
 OBJ 	:= obj
 
 CC	:= gcc
-CXX	:= g++
-LINKER	:= gcc 
+LINKER 	:= gcc
+CFLAGS 	:= -Wall -Wextra -pedantic -Werror -g
+LFLAGS 	:= 
 
-CXXFLAGS := -Wall -Wextra -pedantic -Werror -g3 -std=c++11
-CFLAGS 	 := -Wall -Wextra -pedantic -Werror -g
-LFLAGS 	 :=
+INCLUDE  := -I$(INC)/
 
-INCLUDE  := -I$(INC) 
-
-MAIN      := $(SRC)/$(PRODUCT).c
-TEST_MAIN := $(TEST)/main.cpp
-
-TEST_SRCS := $(wildcard $(TEST)/*.cpp)
 SRCS      := $(wildcard $(SRC)/*.c)
-
-TEST_SRCS := $(filter-out $(TEST_MAIN), $(TEST_SRCS))
-SRCS      := $(filter-out $(MAIN), $(SRCS))
-
 OBJS      := $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
 
-#
-# Test Builds
-#
 
-$(BIN)/tests: $(OBJ)/test.o makedirs
-	$(CXX) $(CXXFLAGS) $(LFLAGS) $(INCLUDE) $< $(TEST_SRCS) -o $@
 
-$(OBJ)/test.o: $(TEST)/main.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
-
-#
-# Full builds
-#
+################################################################################
+# EXECUTABLES                                                                  #
+################################################################################
 
 run: build
 	./$(BIN)/$(PRODUCT)
 .PHONY: run
 
+
+
+################################################################################
+# BUILDING                                                                     #
+################################################################################
+
 build: makedirs $(BIN)/$(PRODUCT)
 .PHONY: build 
 
 $(BIN)/$(PRODUCT): $(OBJS)
-	$(LINKER) $(LFLAGS) $(INCLUDE) $^ src/main.cpp -o $@
+	$(LINKER) $(LFLAGS) $(OBJS) -o $@
 
-$(OBJ)/%.o: $(SRCS)
+$(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
-#
-# Miscellaneous
-#
+
+
+################################################################################
+# Miscellaneous                                                                #
+################################################################################
 
 makedirs:
 	@mkdir -p $(BIN) $(OBJ)
