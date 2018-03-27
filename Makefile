@@ -10,7 +10,7 @@ LINKER 	:= gcc
 CFLAGS 	:= -Wall -Wextra -pedantic -Werror -g
 LFLAGS 	:= 
 
-INCLUDE  := -I$(INC)/
+INCLUDE  := -I$(INC)
 
 SRCS      := $(wildcard $(SRC)/*.c)
 OBJS      := $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
