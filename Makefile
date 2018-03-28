@@ -1,21 +1,21 @@
-PRODUCT := mfs
-BIN  	:= bin
-INC 	:= include
+PRODUCT	:= mfs
+BIN	:= bin
+INC	:= include
 SRC	:= src
-TEST 	:= test
-OBJ 	:= obj
+TEST	:= test
+OBJ	:= obj
 
 CXX	:= g++
-LINKER 	:= g++
-CFLAGS 	:= -Wall -Wextra -pedantic -Werror -g
-LFLAGS 	:= 
+LINKER	:= g++
+CFLAGS	:= -Wall -Wextra -pedantic -Werror -g
+LFLAGS	:= 
 
-INCLUDE  := -I$(INC)
+INCLUDE	:= -I$(INC)
 
-EXT 	:= cpp
+EXT	:= cpp
 
-SRCS      := $(wildcard $(SRC)/*.$(EXT))
-OBJS      := $(patsubst $(SRC)/%.$(EXT), $(OBJ)/%.o, $(SRCS))
+SRCS	:= $(wildcard $(SRC)/*.$(EXT))
+OBJS	:= $(patsubst $(SRC)/%.$(EXT), $(OBJ)/%.o, $(SRCS))
 
 
 
