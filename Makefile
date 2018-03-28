@@ -5,15 +5,17 @@ SRC	:= src
 TEST 	:= test
 OBJ 	:= obj
 
-CC	:= gcc
-LINKER 	:= gcc
+CXX	:= g++
+LINKER 	:= g++
 CFLAGS 	:= -Wall -Wextra -pedantic -Werror -g
 LFLAGS 	:= 
 
 INCLUDE  := -I$(INC)
 
-SRCS      := $(wildcard $(SRC)/*.c)
-OBJS      := $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
+EXT 	:= cpp
+
+SRCS      := $(wildcard $(SRC)/*.$(EXT))
+OBJS      := $(patsubst $(SRC)/%.$(EXT), $(OBJ)/%.o, $(SRCS))
 
 
 
@@ -37,8 +39,8 @@ build: makedirs $(BIN)/$(PRODUCT)
 $(BIN)/$(PRODUCT): $(OBJS)
 	$(LINKER) $(LFLAGS) $(OBJS) -o $@
 
-$(OBJ)/%.o: $(SRC)/%.c
-	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+$(OBJ)/%.o: $(SRC)/%.$(EXT)
+	$(CXX) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 
 
