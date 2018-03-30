@@ -4,11 +4,11 @@
 
 int main()
 {
-  printf( "Hello world again!\n" );
-  printf( "0! = %d\n", factorial( 0 ) );
+    printf( "Hello world again!\n" );
+    printf( "0! = %d\n", factorial( 0 ) );
 
-  printf("\nyo yo yo boi");
+    printf("yo yo yo boi\n");
 
-  return 0;
+    return 0;
 }
 
