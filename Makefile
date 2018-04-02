@@ -15,7 +15,7 @@ INCLUDE     := -I$(INC)
 
 EXT         := c
 MAIN        := $(SRC)/main.$(EXT)
-TEST_FMT    := test_%.o
+TEST_FMT    := test_%
 
 SRCS        := $(wildcard $(SRC)/*.$(EXT))
 SRCS        := $(filter-out $(MAIN), $(SRCS))
@@ -30,6 +30,10 @@ TEST_BINS   := $(patsubst $(TEST)/%.$(EXT), $(BIN)/$(TEST_FMT), $(TEST_SRCS))
 ################################################################################
 # EXECUTABLES                                                                  #
 ################################################################################
+
+test: build $(TEST_BINS)
+	@for file in $(TEST_BINS); do echo "$$file..."; ./$$file 2> /dev/null; done
+.PHONY: test
 
 run: build
 	./$(BIN)/$(PRODUCT)
