@@ -32,7 +32,13 @@ TEST_BINS   := $(patsubst $(TEST)/%.$(EXT), $(BIN)/$(TEST_FMT), $(TEST_SRCS))
 ################################################################################
 
 test: build $(TEST_BINS)
-	@for file in $(TEST_BINS); do echo "$$file..."; ./$$file 2> /dev/null; done
+	@for file in $(TEST_BINS); do\
+		echo "$$file...";\
+		./$$file 2> /dev/null;\
+		if [ "$$?" != "0" ]; then\
+			echo "";\
+		fi;\
+	done
 .PHONY: test
 
 run: build
