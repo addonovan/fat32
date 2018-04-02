@@ -1,7 +1,7 @@
 #ifndef __FACTORIAL_H__
 #define __FACTORIAL_H__
 
-int factorial( int n );
+unsigned int factorial( unsigned short n );
 
 #endif
 

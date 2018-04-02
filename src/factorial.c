@@ -1,6 +1,6 @@
-#include "factorial.h"
+#include <factorial.h>
 
-int factorial( int n )
+unsigned int factorial( unsigned short n )	
 {
     if ( n <= 1 ) return 1;
     return n * factorial( n - 1 );

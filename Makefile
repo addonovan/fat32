@@ -1,30 +1,30 @@
-PRODUCT		:= lab1
-BIN		:= bin
-INC		:= include
-SRC		:= src
-TEST		:= test
-OBJ		:= obj
+PRODUCT     := lab1
+BIN         := bin
+INC         := include
+SRC         := src
+TEST        := test
+OBJ         := obj
 
-CC		:= gcc
-CFLAGS		:= -Wall -Wextra -pedantic -Werror -g
+CC          := gcc
+CFLAGS      := -Wall -Wextra -pedantic -Werror -g
 
-LINKER		:= gcc
-LFLAGS		:= 
+LINKER      := gcc
+LFLAGS      := 
 
-INCLUDE		:= -I$(INC)
+INCLUDE     := -I$(INC)
 
-EXT		:= c
-MAIN		:= $(SRC)/main.$(EXT)
-TEST_FMT	:= test_%.o
+EXT         := c
+MAIN        := $(SRC)/main.$(EXT)
+TEST_FMT    := test_%.o
 
-SRCS		:= $(wildcard $(SRC)/*.$(EXT))
-SRCS		:= $(filter-out $(MAIN), $(SRCS))
-TEST_SRCS	:= $(wildcard $(TEST)/*.$(EXT))
+SRCS        := $(wildcard $(SRC)/*.$(EXT))
+SRCS        := $(filter-out $(MAIN), $(SRCS))
+TEST_SRCS   := $(wildcard $(TEST)/*.$(EXT))
 
-OBJS		:= $(patsubst $(SRC)/%.$(EXT), $(OBJ)/%.o, $(SRCS))
-MAIN_OBJ	:= $(patsubst $(SRC)/%.$(EXT), $(OBJ)/%.o, $(MAIN))
+OBJS        := $(patsubst $(SRC)/%.$(EXT), $(OBJ)/%.o, $(SRCS))
+MAIN_OBJ    := $(patsubst $(SRC)/%.$(EXT), $(OBJ)/%.o, $(MAIN))
 
-TEST_BINS	:= $(patsubst $(TEST)/%.$(EXT), $(BIN)/$(TEST_FMT), $(TEST_SRCS))
+TEST_BINS   := $(patsubst $(TEST)/%.$(EXT), $(BIN)/$(TEST_FMT), $(TEST_SRCS))
 
 
 ################################################################################
