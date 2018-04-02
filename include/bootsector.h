@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct 
 {
@@ -22,6 +23,6 @@ typedef struct
  * Initializes a bootsector structure by reading the given FAT32
  * image.
  */
-void bootsector_init( bootsector_t*, FILE* file );
+bool bootsector_init( bootsector_t*, FILE* file );
 
 #endif

@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <bootsector.h>
+#include <stdbool.h>
 
 typedef struct
 {
@@ -12,6 +13,6 @@ typedef struct
 
 } filesystem_t;
 
-void filesystem_init( filesystem_t*, FILE* file );
+bool filesystem_init( filesystem_t*, const char* file_name  );
 
 #endif
