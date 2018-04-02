@@ -1,4 +1,4 @@
-PRODUCT     := lab1
+PRODUCT     := mfs
 BIN         := bin
 INC         := include
 SRC         := src
