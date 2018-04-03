@@ -83,4 +83,3 @@ clean:
 	@rm -rf $(BIN) $(OBJ)
 	@mkdir -p $(BIN) $(OBJ)
 .PHONY: clean
-
