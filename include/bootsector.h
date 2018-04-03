@@ -1,4 +1,5 @@
 #ifndef __BOOTSECTOR_H__
+
 #define __BOOTSECTOR_H__
 
 #include <stdint.h>
