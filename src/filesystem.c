@@ -5,6 +5,15 @@
 #include <string.h>
 #include <file.h>
 
+//To have commands not go through after close the file if statement will be made for ex:
+/*
+if(filesytem_close(...)
+{
+    perror("File system image must be opened first")
+    return false;
+}
+*/
+
 bool filesystem_init( filesystem_t* this, const char* file_name )
 {
     // open the image file for reading
@@ -120,3 +129,20 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
     free( dir.files );
     return false;
 }
+
+bool filesystem_close( filesystem_t* this, const char* file_name)
+{
+    //close the image file
+    this->_file = fclose( file_name);
+    
+    //file can not close if not at opened first 
+    if(!fopen(file_name, "r"));
+    {
+        perror("File system not open");
+        return false;
+    }
+
+    return true;
+}
+
+

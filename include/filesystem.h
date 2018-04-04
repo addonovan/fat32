@@ -87,4 +87,7 @@ directory_t filesystem_list( filesystem_t* );
  */
 bool filesystem_cd( filesystem_t*, const char* dir_name );
 
+bool filesystem_close( filesystem_t*, const char* file_name  );
+
+
 #endif
