@@ -19,6 +19,17 @@ bool filesystem_init( filesystem_t* this, const char* file_name )
         return false;
     }
 
+    // calculate some useful sizes we'll need in a bit
+    offset_t bps            = this->_boot.bytes_per_sector;
+    offset_t size_reserved  = this->_boot.reserved_sector_count * bps;
+    offset_t size_fat       = this->_boot.fat_sector_count * bps;
+
+    // the first FAT starts immediately after the reserved section
+    this->fat = size_reserved;
+
+    // the fs clusters start after the (identical) FATs
+    this->clusters = this->fat + ( size_fat * this->_boot.fat_count );
+
     return true;
 }
 
