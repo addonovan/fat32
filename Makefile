@@ -6,7 +6,7 @@ TEST        := test
 OBJ         := obj
 
 CC          := gcc
-CFLAGS      := -Wall -Wextra -pedantic -Werror -g
+CFLAGS      := -Wall -Wextra -Werror -g
 
 LINKER      := gcc
 LFLAGS      := 
