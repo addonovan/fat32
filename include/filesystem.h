@@ -11,9 +11,9 @@ typedef uint32_t offset_t;
 
 typedef struct
 {
-	FILE* 			_file;
+    FILE*           _file;
 
-	bootsector_t 	_boot;
+    bootsector_t    _boot;
 
     offset_t        fat;
     offset_t        clusters;
