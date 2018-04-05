@@ -22,4 +22,11 @@ typedef struct
 
 bool filesystem_init( filesystem_t*, const char* file_name  );
 
+bool filesystem_read_into( 
+    const filesystem_t*, 
+    void* dest,
+    offset_t start, 
+    offset_t length 
+);
+
 #endif

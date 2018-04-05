@@ -1,4 +1,5 @@
 #include <filesystem.h>
+#include <assert.h>
 
 bool filesystem_init( filesystem_t* this, const char* file_name )
 {
@@ -31,5 +32,18 @@ bool filesystem_init( filesystem_t* this, const char* file_name )
     this->clusters = this->fat + ( size_fat * this->_boot.fat_count );
 
     return true;
+}
+
+bool filesystem_read_into( 
+    const filesystem_t* this, 
+    void* dest,
+    offset_t start, 
+    offset_t length 
+)
+{
+    assert( this->_file != NULL );
+    
+    fseek( this->_file, start, SEEK_SET );
+    return fread( dest, length, 1, this->_file ) == 1;
 }
 
