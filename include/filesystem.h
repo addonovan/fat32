@@ -22,13 +22,12 @@ typedef struct
 
 } filesystem_t;
 
-bool filesystem_init( filesystem_t*, const char* file_name  );
-
-bool filesystem_read_into( 
-    const filesystem_t*, 
-    void* dest,
-    offset_t start, 
-    offset_t length 
-);
+/**
+ * Initializes the filesystem and opens the file with the given name.
+ * This will immediately try to aprse the FAT32 bootsector.
+ *
+ * Returns if the filesystem was successfully opened.
+ */
+bool filesystem_init( filesystem_t*, const char* file_name );
 
 #endif

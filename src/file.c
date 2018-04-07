@@ -35,7 +35,7 @@ void file_init( file_t* this, const filesystem_t* fs, offset_t start )
     this->fs = fs;
 
     raw_file_t raw;
-    if ( !filesystem_read_into( fs, &raw, start, sizeof( raw_file_t ) ) )
+    if ( !io_read( fs, start, sizeof( raw_file_t ), &raw ) )
     {
         fprintf( stderr, "Failed to read file from image!\n" );
         exit( -1 );

@@ -34,16 +34,3 @@ bool filesystem_init( filesystem_t* this, const char* file_name )
 
     return true;
 }
-
-bool filesystem_read_into( 
-    const filesystem_t* this, 
-    void* dest,
-    offset_t start, 
-    offset_t length 
-)
-{
-    assert( this->_file != NULL );
-    
-    fseek( this->_file, start, SEEK_SET );
-    return fread( dest, length, 1, this->_file ) == 1;
-}

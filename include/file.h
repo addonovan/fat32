@@ -48,10 +48,24 @@ typedef struct
 
 } file_t;
 
+/**
+ * Initializes a file by reading its description at the given
+ * offset.
+ */
 void file_init( file_t*, const filesystem_t* fs, offset_t start );
 
+/**
+ * Reads the next cluster of the file into the buffer (make sure
+ * that this is at least the size of one cluster, see `io_clalloc`).
+ * 
+ * Returns if the read was successful.
+ */
 bool file_read( file_t*, void* buf );
 
+/**
+ * Determines if, based on the file's attributes and status, the
+ * file should be displayed with the `ls` command.
+ */
 bool file_displayable( file_t* );
 
 #endif
