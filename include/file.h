@@ -2,13 +2,18 @@
 #define __FILE_H__
 
 #include <stdint.h>
+
+typedef struct file_attrs_t     file_attrs_t;
+typedef struct file_status_t    file_status_t;
+typedef struct file_t           file_t;
+
 #include <filesystem.h>
 
 /**
  * The attributes of a file. These are parsed
  * from the `attrs` byte of a directory listing.
  */
-typedef struct 
+struct file_attrs_t
 {
     
     bool    read_only;
@@ -18,25 +23,25 @@ typedef struct
     bool    directory;
     bool    archive;
 
-} file_attrs_t;
+};
 
 /**
  * The status of a file. These are parsed from
  * the first character of a file's raw name.
  */
-typedef struct
+struct file_status_t
 {
     
     bool    deleted;
     bool    last;
     bool    free;
 
-} file_status_t;
+};
 
 /**
  * A file, or directory listing describing a file.
  */
-typedef struct 
+struct file_t
 {
     /** The filesystem we're a part of */
     const filesystem_t* fs;
@@ -62,7 +67,7 @@ typedef struct
     /** The status of this directory entry. */
     file_status_t   status;
 
-} file_t;
+};
 
 /**
  * Initializes a file by reading its description at the given

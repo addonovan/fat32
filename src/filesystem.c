@@ -1,6 +1,9 @@
 #include <filesystem.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <io.h>
+#include <string.h>
+#include <file.h>
 
 bool filesystem_init( filesystem_t* this, const char* file_name )
 {
@@ -32,5 +35,29 @@ bool filesystem_init( filesystem_t* this, const char* file_name )
     // the fs clusters start after the (identical) FATs
     this->clusters = this->fat + ( size_fat * this->_boot.fat_count );
 
+    // we start off in the root directory
+    this->cwd = 2; // for some reason 2 is actually the root directory???
+
     return true;
+}
+
+unsigned int filesystem_list( filesystem_t* this, file_t* files )
+{
+    offset_t position = cluster_to_offset( this, this->cwd );
+
+    int count = 0;
+    int i;
+    for ( i = 0; i < 16; i++ )
+    {
+        file_init( files + i, this, position );
+
+        // if this file is displayable, we'll move to the next one
+        if ( file_displayable( files + count ) )
+        {
+            count++;
+            position += 32; // TODO get rid of magic number
+        }
+    }
+
+    return count;
 }

@@ -24,10 +24,12 @@ typedef uint32_t    sector_t;
  */
 typedef uint32_t    cluster_t;
 
+typedef struct filesystem_t filesystem_t;
+
 /**
  * A structure representing a FAT32 filesystem.
  */
-typedef struct
+struct filesystem_t
 {
     /** A file handle for the filesystem image. */
     FILE*           _file;
@@ -41,7 +43,12 @@ typedef struct
     /** The offset at which the first cluster begins. */
     offset_t        clusters;
 
-} filesystem_t;
+    /** The current working directory. */
+    cluster_t       cwd;
+
+};
+
+#include <file.h>
 
 /**
  * Initializes the filesystem and opens the file with the given name.
@@ -50,5 +57,12 @@ typedef struct
  * Returns if the filesystem was successfully opened.
  */
 bool filesystem_init( filesystem_t*, const char* file_name );
+
+/**
+ * Lists the files in the current working directory. This will write
+ * up to 16 files into the `files` parameter, but return the number
+ * of files actually written.
+ */
+unsigned int filesystem_list( filesystem_t*, file_t* files );
 
 #endif

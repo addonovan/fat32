@@ -6,6 +6,14 @@
 #include <filesystem.h>
 
 //
+// Offset/Sector/Cluster conversion
+//
+
+offset_t cluster_to_offset( const filesystem_t* fs, cluster_t cluster );
+
+offset_t sector_to_offset( const filesystem_t* fs, sector_t sector );
+
+//
 // Filesystem reading
 //
 

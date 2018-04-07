@@ -6,7 +6,7 @@
 int main()
 {
     filesystem_t fs;
-    filesystem_init( &fs, "res/fat32.img" );
+    require( "%d", true, filesystem_init( &fs, "res/fat32.img" ) );
 
     // grab the BAR.TXT file from the root directory
     file_t file;

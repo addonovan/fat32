@@ -5,7 +5,7 @@
 int main()
 {
     filesystem_t fs;
-    filesystem_init( &fs, "res/fat32.img" );
+    require( "%d", true, filesystem_init( &fs, "res/fat32.img" ) );
 
     char* cluster = ( char* ) io_clalloc( &fs, 1 );
     require( "%d", true, io_read_cluster( &fs, 17, cluster ) );

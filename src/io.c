@@ -1,5 +1,26 @@
 #include <io.h>
 
+//
+// Type conversions
+//
+
+offset_t cluster_to_offset( const filesystem_t* fs, cluster_t cluster )
+{
+    offset_t cluster_off = cluster - 2;
+    cluster_off *= fs->_boot.sectors_per_cluster;
+
+    return fs->clusters + ( fs->_boot.bytes_per_sector * cluster_off );
+}
+
+offset_t sector_to_offset( const filesystem_t* fs, sector_t sector )
+{
+    return fs->fat + ( fs->_boot.bytes_per_sector * sector );
+}
+
+//
+// Filesystem reading
+//
+
 bool io_read( 
     const filesystem_t* fs, 
     offset_t start, 
@@ -17,9 +38,8 @@ bool io_read_sector(
     void* dst
 )
 {
-    offset_t bps    = fs->_boot.bytes_per_sector;
-    offset_t start  = bps * ( fs->fat + sector );
-    offset_t length = bps;
+    offset_t start  = sector_to_offset( fs, sector );
+    offset_t length = fs->_boot.bytes_per_sector;
 
     return io_read( fs, start, length, dst );
 }
@@ -30,9 +50,8 @@ bool io_read_cluster(
     void* dst
 )
 {
-    offset_t bps        = fs->_boot.bytes_per_sector;
-    offset_t start      = bps * ( fs->clusters + ( cluster - 2 ) );
-    offset_t length     = fs->_boot.sectors_per_cluster * bps;
+    offset_t start  = cluster_to_offset( fs, cluster );
+    offset_t length =  fs->_boot.bytes_per_sector * fs->_boot.sectors_per_cluster;
 
     return io_read( fs, start, length, dst );
 }
