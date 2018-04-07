@@ -26,19 +26,6 @@ struct file_attrs_t
 };
 
 /**
- * The status of a file. These are parsed from
- * the first character of a file's raw name.
- */
-struct file_status_t
-{
-    
-    bool    deleted;
-    bool    last;
-    bool    free;
-
-};
-
-/**
  * A file, or directory listing describing a file.
  */
 struct file_t
@@ -64,8 +51,8 @@ struct file_t
     /** Human-readable attributes of the file. */
     file_attrs_t    attrs;
 
-    /** The status of this directory entry. */
-    file_status_t   status;
+    /** If this file has been deleted (or simply never existed) */
+    bool            deleted;
 
 };
 

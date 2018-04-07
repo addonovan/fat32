@@ -19,7 +19,18 @@ int main()
     unsigned int i;
     for ( i = 0; i < count; i++ )
     {
-        printf( "%d: %s %s\n", i, files[ i ].name, files[ i ].ext );
+        printf( 
+            "%2d: %8s %3s (%c%c%c%c%c%c)\n", 
+            i, 
+            files[ i ].name, 
+            files[ i ].ext,
+            files[ i ].attrs.read_only  ? 'R' : '-',
+            files[ i ].attrs.hidden     ? 'h' : '-',
+            files[ i ].attrs.system     ? 's' : '-',
+            files[ i ].attrs.volume_id  ? 'v' : '-',
+            files[ i ].attrs.directory  ? 'D' : '-',
+            files[ i ].attrs.archive    ? 'A' : '-'
+        );
     }
 
     return 0;

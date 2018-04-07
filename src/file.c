@@ -49,11 +49,8 @@ void file_init( file_t* this, const filesystem_t* fs, offset_t start )
     switch ( ( uint8_t ) raw.name[ 0 ] )
     {
         case 0x00:
-            this->status.last = true;
-            // intentional fall-through
-
         case 0xe5:
-            this->status.free = true;
+            this->deleted = true;
             break;
 
         case 0x05:
@@ -77,11 +74,8 @@ void file_init( file_t* this, const filesystem_t* fs, offset_t start )
 
 bool file_displayable( file_t* this )
 {
-    if ( this->status.deleted ) 
+    if ( this->deleted || this->attrs.hidden )
         return false;
-    
-    if ( this->attrs.read_only )
-        return true;
     
     if ( this->attrs.directory )
         return true;

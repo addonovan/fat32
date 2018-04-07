@@ -49,14 +49,16 @@ unsigned int filesystem_list( filesystem_t* this, file_t* files )
     int i;
     for ( i = 0; i < 16; i++ )
     {
-        file_init( files + i, this, position );
+        file_init( files + count, this, position );
 
-        // if this file is displayable, we'll move to the next one
+        // if this is displayable, we'll move to the next slot
         if ( file_displayable( files + count ) )
         {
             count++;
-            position += 32; // TODO get rid of magic number
         }
+
+        // always move to the next folder
+        position += 32; // TODO get rid of magic number
     }
 
     return count;
