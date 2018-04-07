@@ -7,7 +7,9 @@
 #include <stdint.h>
 
 /** An offset in the file system. Our version of a pointer, really. */
-typedef uint32_t offset_t;
+typedef uint32_t    offset_t;
+typedef uint32_t    sector_t;
+typedef uint32_t    cluster_t;
 
 typedef struct
 {

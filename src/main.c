@@ -2,6 +2,7 @@
 #include <filesystem.h>
 #include <bootsector.h>
 #include <file.h>
+#include <stdlib.h>
 
 int main()
 {
@@ -15,12 +16,35 @@ int main()
     file_t file;
     for ( int i = 0; i < 16; i++ )
     {
-        file_read( &file, &fs, fs.clusters + ( 32 * i ) );
+        file_init( &file, &fs, fs.clusters + ( 32 * i ) );
 
-        printf( "[%2d] %s %s\n", i, file.name, file.ext );
+        if ( file.status.last )
+            break;
+
+        if ( file_displayable( &file ) )
+        {
+            printf( file.attrs.archive        ? "A" : "-" );
+            printf( file.attrs.directory      ? "S" : "-" );
+            printf( file.attrs.volume_id      ? "v" : "-" );
+            printf( file.attrs.system         ? "s" : "-" );
+            printf( file.attrs.hidden         ? "h" : "-" );
+            printf( file.attrs.read_only      ? "R" : "-" );
+
+            printf( "   %s %s\n", file.name, file.ext );
+        }
 
         file_destroy( &file );
     }
+
+    // print contents of bar.txt
+    file_init( &file, &fs, fs.clusters );
+    printf( "Contents of %s.%s:\n", file.name, file.ext );
+
+    char* buf = calloc( sizeof( char ), 1024 );
+    file_read( &file, &buf );
+    printf( "%s\n", buf );
+
+    free( buf );
 
     return 0;
 }

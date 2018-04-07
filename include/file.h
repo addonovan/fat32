@@ -6,33 +6,52 @@
 
 typedef struct 
 {
+    
+    bool    read_only;
+    bool    hidden;
+    bool    system;
+    bool    volume_id;
+    bool    directory;
+    bool    archive;
+
+} file_attrs_t;
+
+typedef struct
+{
+    
+    bool    deleted;
+    bool    last;
+    bool    free;
+
+} file_status_t;
+
+typedef struct 
+{
+    /** The filesystem we're a part of */
+    const filesystem_t* fs;
+
     /** raw data read from the fat32 volume */
-    void*   _raw;
+    void*           _raw;
 
-    // properties
+    /** A null-terminated copy of the file's name. */
+    char            name[ 9 ];
 
-    /** A null-terminated copy of the name read from the image */
-    char    name[ 9 ];
-    char    ext[ 4 ];
+    /** A null-terminated copy of the file's extension. */
+    char            ext[ 4 ];
 
-    int8_t  attrs;
+    /** Human-readable attributes of the file. */
+    file_attrs_t    attrs;
 
-    // derived attributes
-    bool    read_only;      // attr: 0b0000 0001
-    bool    hidden;         // attr: 0b0000 0010
-    bool    system_file;    // attr: 0b0000 0100
-    bool    volume_label;   // attr: 0b0000 1000
-    bool    subdirectory;   // attr: 0b0001 0000
-    bool    archived;       // attr: 0b0010 0000
-
-    bool    directory;      // name[ 0 ] == 0x2e
-    bool    deleted;        // name[ 0 ] == 0xe5
+    /** The status of this directory entry. */
+    file_status_t   status;
 
 } file_t;
 
-void file_read( file_t*, filesystem_t* fs, offset_t start );
+void file_init( file_t*, const filesystem_t* fs, offset_t start );
 
 void file_destroy( file_t* );
+
+bool file_read( file_t*, void* buf );
 
 bool file_displayable( file_t* );
 

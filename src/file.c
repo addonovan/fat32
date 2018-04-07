@@ -27,10 +27,11 @@ typedef struct __attribute__((__packed__))
 #undef concat
 #undef _concat
 
-void file_read( file_t* this, filesystem_t* fs, offset_t start )
+void file_init( file_t* this, const filesystem_t* fs, offset_t start )
 {
     // zero ourselves out first
     memset( this, 0, sizeof( *this ) );
+    this->fs = fs;
 
     raw_file_t raw;
     if ( !filesystem_read_into( fs, &raw, start, sizeof( raw_file_t ) ) )
@@ -47,33 +48,27 @@ void file_read( file_t* this, filesystem_t* fs, offset_t start )
 
     switch ( ( uint8_t ) raw.name[ 0 ] )
     {
-        // this file was deleted (or never existed)
-        case 0xe5:
         case 0x00:
-            this->deleted = true;
+            this->status.last = true;
+            // intentional fall-through
+
+        case 0xe5:
+            this->status.free = true;
             break;
 
-        // the first character is actually 0xe5
         case 0x05:
             this->name[ 0 ] = ( char ) 0xe5;
-            break;
-
-        // this is actually a directory
-        case 0x2e:
-            strncpy( this->name + 0, this->name + 1, sizeof( this->name ) - 2 );
-            this->name[ sizeof( this->name ) - 1 ] = '\0';
             break;
     }
 
     // read the attributes into a more human-friendly manner
     uint8_t attrs = raw.attributes;
-    this->attrs         = attrs;
-    this->read_only     = ( attrs & 0b00000001 ) != 0;
-    this->hidden        = ( attrs & 0b00000010 ) != 0;
-    this->system_file   = ( attrs & 0b00000100 ) != 0;
-    this->volume_label  = ( attrs & 0b00001000 ) != 0;
-    this->subdirectory  = ( attrs & 0b00010000 ) != 0;
-    this->archived      = ( attrs & 0b00100000 ) != 0;
+    this->attrs.read_only     = ( attrs & 0b00000001 ) != 0;
+    this->attrs.hidden        = ( attrs & 0b00000010 ) != 0;
+    this->attrs.system        = ( attrs & 0b00000100 ) != 0;
+    this->attrs.volume_id     = ( attrs & 0b00001000 ) != 0;
+    this->attrs.directory     = ( attrs & 0b00010000 ) != 0;
+    this->attrs.archive       = ( attrs & 0b00100000 ) != 0;
 
     // copy the data onto the heap, and point to it (for later, of course)
     this->_raw = malloc( sizeof( raw_file_t ) );
@@ -88,9 +83,32 @@ void file_destroy( file_t* this )
 
 bool file_displayable( file_t* this )
 {
-    if ( this->deleted ) return false;
+    if ( this->status.deleted ) 
+        return false;
+    
+    if ( this->attrs.read_only )
+        return true;
+    
+    if ( this->attrs.directory )
+        return true;
 
-    return this->read_only
-        || this->subdirectory
-        || this->archived;
+    if ( this->attrs.archive )
+        return true;
+
+    return false;
+}
+
+bool file_read( file_t* this, void* buf )
+{
+    ( void )( this );
+    ( void )( buf );
+    return true;
+
+    // bool success = filesystem_read_cluster( 
+    //     this->fs,
+    //     buf,
+    //     raw->cluster_low
+    // );
+    // 
+    // return success;
 }

@@ -1,5 +1,6 @@
 #include <filesystem.h>
 #include <assert.h>
+#include <stdlib.h>
 
 bool filesystem_init( filesystem_t* this, const char* file_name )
 {
@@ -46,4 +47,3 @@ bool filesystem_read_into(
     fseek( this->_file, start, SEEK_SET );
     return fread( dest, length, 1, this->_file ) == 1;
 }
-
