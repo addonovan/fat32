@@ -30,8 +30,9 @@ typedef struct
     /** The filesystem we're a part of */
     const filesystem_t* fs;
 
-    /** raw data read from the fat32 volume */
-    void*           _raw;
+    cluster_t       cluster_low;
+    cluster_t       cluster_high;
+    uint32_t        size;
 
     /** A null-terminated copy of the file's name. */
     char            name[ 9 ];
@@ -48,8 +49,6 @@ typedef struct
 } file_t;
 
 void file_init( file_t*, const filesystem_t* fs, offset_t start );
-
-void file_destroy( file_t* );
 
 bool file_read( file_t*, void* buf );
 

@@ -37,7 +37,6 @@ void file_init( file_t* this, const filesystem_t* fs, offset_t start )
     raw_file_t raw;
     if ( !filesystem_read_into( fs, &raw, start, sizeof( raw_file_t ) ) )
     {
-        this->_raw = NULL;
         fprintf( stderr, "Failed to read file from image!\n" );
         exit( -1 );
         return;
@@ -71,15 +70,9 @@ void file_init( file_t* this, const filesystem_t* fs, offset_t start )
     this->attrs.directory     = ( attrs & 0b00010000 ) != 0;
     this->attrs.archive       = ( attrs & 0b00100000 ) != 0;
 
-    // copy the data onto the heap, and point to it (for later, of course)
-    this->_raw = malloc( sizeof( raw_file_t ) );
-    memcpy( this->_raw, &raw, sizeof( raw_file_t ) );
-}
-
-void file_destroy( file_t* this )
-{
-    // free our heap memory
-    free( this->_raw );
+    this->cluster_low = raw.cluster_low;
+    this->cluster_high = raw.cluster_high;
+    this->size = raw.size;
 }
 
 bool file_displayable( file_t* this )
@@ -101,11 +94,9 @@ bool file_displayable( file_t* this )
 
 bool file_read( file_t* this, void* buf )
 {
-    raw_file_t* raw = this->_raw;
-
     return io_read_cluster(
         this->fs,
-        raw->cluster_low,
+        this->cluster_low,
         buf
     );
 }

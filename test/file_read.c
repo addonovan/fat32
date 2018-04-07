@@ -22,7 +22,6 @@ int main()
     
     // clean up after ourselves
     io_free( cluster );
-    file_destroy( &file );
 
     return 0;
 }

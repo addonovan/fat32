@@ -32,8 +32,6 @@ int main()
 
             printf( "   %s %s\n", file.name, file.ext );
         }
-
-        file_destroy( &file );
     }
 
     // print contents of bar.txt
