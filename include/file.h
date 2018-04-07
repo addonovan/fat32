@@ -4,6 +4,10 @@
 #include <stdint.h>
 #include <filesystem.h>
 
+/**
+ * The attributes of a file. These are parsed
+ * from the `attrs` byte of a directory listing.
+ */
 typedef struct 
 {
     
@@ -16,6 +20,10 @@ typedef struct
 
 } file_attrs_t;
 
+/**
+ * The status of a file. These are parsed from
+ * the first character of a file's raw name.
+ */
 typedef struct
 {
     
@@ -25,13 +33,21 @@ typedef struct
 
 } file_status_t;
 
+/**
+ * A file, or directory listing describing a file.
+ */
 typedef struct 
 {
     /** The filesystem we're a part of */
     const filesystem_t* fs;
 
+    /** The id of the first cluster containing this file's contents.*/
     cluster_t       cluster_low;
+
+    /** The id of the last cluster containing this file's contents (or 0). */
     cluster_t       cluster_high;
+
+    /** The size of the file (in bytes). */
     uint32_t        size;
 
     /** A null-terminated copy of the file's name. */

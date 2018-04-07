@@ -6,18 +6,39 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/** An offset in the file system. Our version of a pointer, really. */
+/**
+ * An offset into the file. Just a raw position in the 
+ * filesystem image.
+ */
 typedef uint32_t    offset_t;
+
+/** 
+ * A sector in the file. Numbering begins at the first
+ * sector in the first FAT.
+ */
 typedef uint32_t    sector_t;
+
+/**
+ * A cluster in the FAT file. Numbering begins at the first
+ * cluster in the data section.
+ */
 typedef uint32_t    cluster_t;
 
+/**
+ * A structure representing a FAT32 filesystem.
+ */
 typedef struct
 {
+    /** A file handle for the filesystem image. */
     FILE*           _file;
 
+    /** The bootsector read out of the file system. */
     bootsector_t    _boot;
 
+    /** The offset at which the first FAT begins. */
     offset_t        fat;
+
+    /** The offset at which the first cluster begins. */
     offset_t        clusters;
 
 } filesystem_t;

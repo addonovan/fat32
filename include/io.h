@@ -5,9 +5,6 @@
 #include <stdlib.h>
 #include <filesystem.h>
 
-typedef uint32_t    sector_t;
-typedef uint32_t    cluster_t;
-
 //
 // Filesystem reading
 //

@@ -18,7 +18,7 @@ bool io_read_sector(
 )
 {
     offset_t bps    = fs->_boot.bytes_per_sector;
-    offset_t start  = bps * ( fs->_boot.reserved_sector_count + sector );
+    offset_t start  = bps * ( fs->fat + sector );
     offset_t length = bps;
 
     return io_read( fs, start, length, dst );
@@ -31,9 +31,7 @@ bool io_read_cluster(
 )
 {
     offset_t bps        = fs->_boot.bytes_per_sector;
-    offset_t reserved   = fs->_boot.reserved_sector_count;
-    offset_t fat_size   = fs->_boot.fat_count * fs->_boot.fat_sector_count;
-    offset_t start      = bps * ( reserved + fat_size + ( cluster - 2 ) );
+    offset_t start      = bps * ( fs->clusters + ( cluster - 2 ) );
     offset_t length     = fs->_boot.sectors_per_cluster * bps;
 
     return io_read( fs, start, length, dst );
@@ -74,7 +72,7 @@ void* io_clalloc( const filesystem_t* fs, unsigned int size )
 
 
 #ifdef MEM_DEBUG
-    printf( "Allocating %d sectors for %d\n", size, uid );
+    printf( "Allocating %d clusters for %d\n", size, uid );
     bytes += sizeof( uid ); // precede it with the uid
 #endif
 
