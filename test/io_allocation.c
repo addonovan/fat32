@@ -15,5 +15,13 @@ int main()
     block = io_alloc( &fs, 1 );
     require( "%u", 1u, block[ -1 ] );
     io_free( block );
+
+    unsigned int* cluster = io_clalloc( &fs, 1 );
+    require( "%u", 2u, cluster[ -1 ] );
+    io_free( cluster );
+
+    cluster = io_clalloc( &fs, 1 );
+    require( "%u", 3u, cluster[ -1 ] );
+    io_free( cluster );
 #endif
 }

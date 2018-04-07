@@ -31,10 +31,6 @@ TEST_BINS   := $(patsubst $(TEST)/%.$(EXT), $(BIN)/$(TEST_FMT), $(TEST_SRCS))
 # EXECUTABLES                                                                  #
 ################################################################################
 
-run: build
-	./$(BIN)/$(PRODUCT)
-.PHONY: run
-
 test: build $(TEST_BINS)
 	@for file in $(TEST_BINS); do\
 		echo "$$file...";\
@@ -44,6 +40,10 @@ test: build $(TEST_BINS)
 		fi;\
 	done
 .PHONY: test
+
+run: build
+	./$(BIN)/$(PRODUCT)
+.PHONY: run
 
 
 ################################################################################

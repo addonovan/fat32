@@ -73,6 +73,8 @@ void file_init( file_t* this, const filesystem_t* fs, offset_t start )
     // copy the data onto the heap, and point to it (for later, of course)
     this->_raw = malloc( sizeof( raw_file_t ) );
     memcpy( this->_raw, &raw, sizeof( raw_file_t ) );
+
+    printf( "%s starts at %u\n", this->name, raw.cluster_low );
 }
 
 void file_destroy( file_t* this )

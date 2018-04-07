@@ -13,6 +13,14 @@ typedef uint32_t    cluster_t;
 //
 
 /**
+ * Reads a section of the filesystem. Offset is the offset from the start
+ * of the file system (i.e. 0 is the beginning of the boot sectors).
+ * 
+ * Returns if the read was successful or not.
+ */
+bool io_read( const filesystem_t* fs, offset_t start, offset_t length, void* dst );
+
+/**
  * Reads a sector from the filesystem directly into [dst]. 
  * This sector is relative to the start of the first FAT.
  *
@@ -39,6 +47,12 @@ bool io_read_cluster( const filesystem_t* fs, cluster_t cluster, void* dst );
  * a total size of `BPB_BytsPerSec * size + 1` bytes).
  */
 void* io_alloc( const filesystem_t* fs, unsigned int size );
+
+/**
+ * Allocates `size` clusters of memory on the heap with an
+ * additional trailing byte for a null-terminator.
+ */
+void* io_clalloc( const filesystem_t* fs, unsigned int size );
 
 /**
  * Free's a block of memory allocated by `io_alloc`
