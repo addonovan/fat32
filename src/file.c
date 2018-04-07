@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <io.h>
 
 #define _concat(a, b) a##b
 #define concat(a, b) _concat(a, b)
@@ -73,8 +74,6 @@ void file_init( file_t* this, const filesystem_t* fs, offset_t start )
     // copy the data onto the heap, and point to it (for later, of course)
     this->_raw = malloc( sizeof( raw_file_t ) );
     memcpy( this->_raw, &raw, sizeof( raw_file_t ) );
-
-    printf( "%s starts at %u\n", this->name, raw.cluster_low );
 }
 
 void file_destroy( file_t* this )
@@ -102,15 +101,11 @@ bool file_displayable( file_t* this )
 
 bool file_read( file_t* this, void* buf )
 {
-    ( void )( this );
-    ( void )( buf );
-    return true;
+    raw_file_t* raw = this->_raw;
 
-    // bool success = filesystem_read_cluster( 
-    //     this->fs,
-    //     buf,
-    //     raw->cluster_low
-    // );
-    // 
-    // return success;
+    return io_read_cluster(
+        this->fs,
+        raw->cluster_low,
+        buf
+    );
 }

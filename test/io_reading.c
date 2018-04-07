@@ -7,10 +7,10 @@ int main()
     filesystem_t fs;
     filesystem_init( &fs, "res/fat32.img" );
 
-    void* sector = io_clalloc( &fs, 1 );
-    require( "%d", true, io_read_cluster( &fs, 17, sector ) );
-    str_require( "5 6 7 8\n", ( char* ) sector );
-    io_free( sector );
+    char* cluster = io_clalloc( &fs, 1 );
+    require( "%d", true, io_read_cluster( &fs, 17, cluster ) );
+    str_require( "5 6 7 8\n", cluster );
+    io_free( cluster );
 
     return 0;
 }
