@@ -6,9 +6,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef struct 
+typedef struct bootsector_t bootsector_t;
+
+struct bootsector_t
 {
-    char        oem_name[ 8 ];          // BS_OEMName
+    char        oem_name[ 9 ];          // BS_OEMName (1 additional byte for \0)
     int16_t     bytes_per_sector;       // BPB_BytsPerSec
     int8_t      sectors_per_cluster;    // BPB_SecPerClus
     int16_t     reserved_sector_count;  // BPB_RsvdSecCnt
@@ -16,9 +18,9 @@ typedef struct
     int16_t     root_entry_count;       // BPB_RootEntCnt
     int32_t     fat_sector_count;       // BPB_FATSz32
     int32_t     root_cluster;           // BPB_RootClus
-    char        volume_label[ 11 ];     // BS_VolLab
+    char        volume_label[ 11 ];     // BS_VolLab (1 additional byte for \0)
 
-} bootsector_t;
+};
 
 /**
  * Initializes a bootsector structure by reading the given FAT32
