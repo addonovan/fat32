@@ -12,7 +12,7 @@ int main()
     file_t file;
     file_init( &file, &fs, fs.clusters );
 
-    str_require( "BAR     ", file.name );
+    str_require( "BAR", file.name );
     str_require( "TXT", file.ext );
 
     // read the first cluster of the file

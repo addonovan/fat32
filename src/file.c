@@ -58,6 +58,19 @@ void file_init( file_t* this, const filesystem_t* fs, offset_t start )
             break;
     }
 
+    // now a bit of extra processing on the name/extension,
+    // let's remove all of the trailing spaces so it can be treated
+    // like a regular string everywhere else
+    int j;
+    for ( j = 7; j >= 0 && this->name[ j ] == ' '; j-- )
+    {
+        this->name[ j ] = '\0';
+    }
+    for ( j = 2; j >= 0 && this->ext[ j ] == ' '; j-- )
+    {
+        this->ext[ j ] = '\0';
+    }
+
     // read the attributes into a more human-friendly manner
     uint8_t attrs = raw.attributes;
     this->attrs.read_only     = ( attrs & 0b00000001 ) != 0;

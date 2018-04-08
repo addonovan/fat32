@@ -17,13 +17,13 @@ int main()
     directory_t dir = filesystem_list( &fs );
 
     require( "%u", 7u, dir.count );
-    str_require( "BAR     ", dir.files[ 0 ].name );
-    str_require( "NUM     ", dir.files[ 1 ].name );
-    str_require( "DEADBEEF", dir.files[ 2 ].name );
-    str_require( "FOO     ", dir.files[ 3 ].name );
-    str_require( "FOLDERA ", dir.files[ 4 ].name );
-    str_require( "FATSPEC ", dir.files[ 5 ].name );
-    str_require( "FOLDERB ", dir.files[ 6 ].name );
+    str_require( "BAR",         dir.files[ 0 ].name );
+    str_require( "NUM",         dir.files[ 1 ].name );
+    str_require( "DEADBEEF",    dir.files[ 2 ].name );
+    str_require( "FOO",         dir.files[ 3 ].name );
+    str_require( "FOLDERA",     dir.files[ 4 ].name );
+    str_require( "FATSPEC",     dir.files[ 5 ].name );
+    str_require( "FOLDERB",     dir.files[ 6 ].name );
     free( dir.files );
 
     return 0;
