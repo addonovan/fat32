@@ -114,6 +114,11 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
         // let's change the directory to that file's offset, and we're done!
         this->cwd = file.cluster_low;
         free( dir.files );
+
+        // oh boy, gotta love this hack
+        if ( this->cwd == 0 )
+            this->cwd = 2;
+
         return true;
     }
 

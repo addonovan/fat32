@@ -27,7 +27,6 @@ int main()
     free( dir.files );
 
     // test changing directories
-
     require( "%d", true, filesystem_cd( &fs, "FOLDERA" ) );
     require( "%u", 6099u, fs.cwd );
 
@@ -37,6 +36,20 @@ int main()
     str_require( ".",           dir.files[ 0 ].name );
     str_require( "..",          dir.files[ 1 ].name );
     str_require( "FOLDERC",     dir.files[ 2 ].name );
+    free( dir.files );
+
+    // test the . special file
+    require( "%d", true, filesystem_cd( &fs, "." ) );
+    require( "%u", 6099u, fs.cwd );
+    dir = filesystem_list( &fs );
+    require( "%u", 3u, dir.count );
+    free( dir.files );
+    
+    // test the .. special file
+    require( "%d", true, filesystem_cd( &fs, ".." ) );
+    require( "%u", 2u, fs.cwd );
+    dir = filesystem_list( &fs );
+    require( "%u", 7u, dir.count );
     free( dir.files );
 
     return 0;
