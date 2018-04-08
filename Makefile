@@ -6,7 +6,7 @@ TEST        := test
 OBJ         := obj
 
 CC          := gcc
-CFLAGS      := -Wall -Wextra -Werror -g
+CFLAGS      := -Wall -Wextra -Werror -Warray-bounds -g -O0
 
 LINKER      := gcc
 LFLAGS      := 
@@ -71,7 +71,7 @@ $(OBJ)/%.o: $(SRC)/%.$(EXT)
 $(OBJ)/$(TEST_FMT).o: $(TEST)/%.$(EXT)
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
-$(BIN)/$(TEST_FMT): $(OBJ)/$(TEST_FMT).o
+$(BIN)/$(TEST_FMT): $(OBJ)/$(TEST_FMT).o $(OBJS)
 	$(LINKER) $(LFLAGS) $(CFLAGS) $(OBJS) $< -o $@
 
 
