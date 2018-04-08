@@ -79,5 +79,13 @@ bool bootsector_init( bootsector_t* this, FILE* file )
     }
     this->volume_label[ 10 + 1 ] = '\0'; // manually insert null terminator
 
+    // replace all trailing spaces with null terminators
+    // this makes it easier to just treat it as a regular
+    // C string later
+    for ( int i = 10; i >= 0 && this->volume_label[ i ] == ' '; i-- )
+    {
+        this->volume_label[ i ] = '\0';
+    }
+
     return true;
 }

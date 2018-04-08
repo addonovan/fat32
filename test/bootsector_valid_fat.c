@@ -11,7 +11,7 @@ int main()
     require( "%d", true, bootsector_init( &boot, file ) );
 
     str_require( "mkdosfs",     boot.oem_name );
-    str_require( "           ", boot.volume_label );
+    str_require( "", boot.volume_label );
 
     require( "%d", 512,     boot.bytes_per_sector );
     require( "%d", 1,       boot.sectors_per_cluster );
