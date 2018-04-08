@@ -92,3 +92,31 @@ directory_t filesystem_list( filesystem_t* this )
 
     return dir;
 }
+
+bool filesystem_cd( filesystem_t* this, const char* dir_name )
+{
+    directory_t dir = filesystem_list( this );
+
+    unsigned int i;
+    for ( i = 0u; i < dir.count; i++ )
+    {
+        file_t file = dir.files[ i ];
+
+        // disregard anything that isn't a directory
+        if ( !file.attrs.directory )
+            continue;
+
+        // compare the names
+        if ( strcmp( dir_name, file.name ) != 0 )
+            continue;
+
+        // hey, they matched!
+        // let's change the directory to that file's offset, and we're done!
+        this->cwd = file.cluster_low;
+        free( dir.files );
+        return true;
+    }
+
+    free( dir.files );
+    return false;
+}

@@ -77,4 +77,14 @@ bool filesystem_init( filesystem_t*, const char* file_name );
  */
 directory_t filesystem_list( filesystem_t* );
 
+/**
+ * Changes the current working directory to the directory with the
+ * given name, `dir_name`.
+ *
+ * Returns if the current directory was moved. This could fail if
+ * no file with the given name exists or if the file was not a
+ * directory.
+ */
+bool filesystem_cd( filesystem_t*, const char* dir_name );
+
 #endif

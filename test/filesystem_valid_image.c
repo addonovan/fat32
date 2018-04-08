@@ -26,5 +26,18 @@ int main()
     str_require( "FOLDERB",     dir.files[ 6 ].name );
     free( dir.files );
 
+    // test changing directories
+
+    require( "%d", true, filesystem_cd( &fs, "FOLDERA" ) );
+    require( "%u", 6099u, fs.cwd );
+
+    // ensure that filesystem_list works in more than the root dir
+    dir = filesystem_list( &fs );
+    require( "%u", 3u, dir.count );
+    str_require( ".",           dir.files[ 0 ].name );
+    str_require( "..",          dir.files[ 1 ].name );
+    str_require( "FOLDERC",     dir.files[ 2 ].name );
+    free( dir.files );
+
     return 0;
 }
