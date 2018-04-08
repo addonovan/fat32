@@ -18,7 +18,7 @@ struct bootsector_t
     int16_t     root_entry_count;       // BPB_RootEntCnt
     int32_t     fat_sector_count;       // BPB_FATSz32
     int32_t     root_cluster;           // BPB_RootClus
-    char        volume_label[ 11 ];     // BS_VolLab (1 additional byte for \0)
+    char        volume_label[ 12 ];     // BS_VolLab (1 additional byte for \0)
 
 };
 

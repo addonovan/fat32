@@ -10,7 +10,7 @@ bool bootsector_init( bootsector_t* this, FILE* file )
         fprintf( stderr, "Failed to read BS_OEMNAME\n" );
         return false;
     }
-    this->oem_name[ 8 + 1 ] = '\0'; // manually insert null terminator
+    this->oem_name[ 7 + 1 ] = '\0'; // manually insert null terminator
 
     fseek( file, 11, SEEK_SET );
     if ( fread( &this->bytes_per_sector, 2, 1, file ) != 1 )
@@ -72,7 +72,7 @@ bool bootsector_init( bootsector_t* this, FILE* file )
         fprintf( stderr, "Failed to read BS_VolLab\n" );
         return false;
     }
-    this->volume_label[ 11 + 1 ] = '\0'; // manually insert null terminator
+    this->volume_label[ 10 + 1 ] = '\0'; // manually insert null terminator
 
     return true;
 }
