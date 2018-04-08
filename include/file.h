@@ -1,6 +1,8 @@
 #ifndef __FILE_H__
 #define __FILE_H__
 
+#define RAW_FILE_SIZE 32
+
 #include <stdint.h>
 
 typedef struct file_attrs_t     file_attrs_t;

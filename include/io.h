@@ -9,8 +9,14 @@
 // Offset/Sector/Cluster conversion
 //
 
+/**
+ * Converts a cluster id to an offset into a file.
+ */
 offset_t cluster_to_offset( const filesystem_t* fs, cluster_t cluster );
 
+/**
+ * Converts a sector id to an offset into a file.
+ */
 offset_t sector_to_offset( const filesystem_t* fs, sector_t sector );
 
 //
@@ -41,6 +47,16 @@ bool io_read_sector( const filesystem_t* fs, sector_t sector, void* dst );
  * Returns if the read was successful or not.
  */
 bool io_read_cluster( const filesystem_t* fs, cluster_t cluster, void* dst );
+
+/**
+ * Gets the successor cluster to the current cluster. This will look
+ * in the FAT and will write the following cluster id to `cluster` if
+ * one exists.
+ *
+ * Returns if the cluster has a successor or not. If the cluster does
+ * not have a successor, then `cluster` will not be updated.
+ */
+bool io_next_cluster( const filesystem_t* fs, cluster_t* cluster );
 
 //
 // Memory Allocation

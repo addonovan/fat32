@@ -56,6 +56,29 @@ bool io_read_cluster(
     return io_read( fs, start, length, dst );
 }
 
+bool io_next_cluster( const filesystem_t* fs, cluster_t* cluster )
+{
+    offset_t fat_offset = fs->fat + ( *cluster * 4 );
+
+    // read the new cluster value from the FAT
+    int16_t new_cluster = -1;
+    if ( !io_read( fs, fat_offset, 2, &new_cluster ) )
+    {
+        // read failed, so I guess there's no next cluster
+        return false;
+    }
+
+    // no successor cluster
+    if ( new_cluster < 0 )
+    {
+        return false;
+    }
+
+    // update the value of the cluster
+    *cluster = new_cluster;
+    return true;
+}
+
 //
 // Memory Allocation
 //

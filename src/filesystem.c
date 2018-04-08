@@ -41,25 +41,54 @@ bool filesystem_init( filesystem_t* this, const char* file_name )
     return true;
 }
 
-unsigned int filesystem_list( filesystem_t* this, file_t* files )
+directory_t filesystem_list( filesystem_t* this )
 {
-    offset_t position = cluster_to_offset( this, this->cwd );
+    // how many entries are inside a single cluster?
+    uint32_t max_files = this->_boot.bytes_per_sector * this->_boot.sectors_per_cluster;
+    max_files /= RAW_FILE_SIZE;
 
-    int count = 0;
-    int i;
-    for ( i = 0; i < 16; i++ )
+    int allocated = max_files;  // the amount of file_t's allocated in a list
+    int count = 0;              // the number of displayable files we've discovered
+
+    // allocate space for 1 cluster's-worth of files
+    file_t* files = malloc( sizeof( file_t ) * allocated );
+
+    // start off in the current working directory
+    cluster_t cluster = this->cwd;
+    do
     {
-        file_init( files + count, this, position );
+        // convert to a file offset
+        offset_t position = cluster_to_offset( this, cluster );
 
-        // if this is displayable, we'll move to the next slot
-        if ( file_displayable( files + count ) )
+        unsigned int i;
+        for ( i = 0u; i < max_files; i++ )
         {
-            count++;
+            file_init( files + count, this, position );
+
+            if ( file_displayable( files + count ) )
+            {
+                count++;
+
+                // if we need to allocate more space, let's just do that
+                // real fast and allocate double the space
+                if ( count == allocated )
+                {
+                    allocated *= 2;
+                    files = realloc( files, sizeof( file_t ) * allocated );
+                }
+            }
+
+            // try to read the next position
+            position += RAW_FILE_SIZE;
         }
-
-        // always move to the next folder
-        position += 32; // TODO get rid of magic number
     }
+    // continue until we run out of clusters for this directory listing
+    while ( io_next_cluster( this, &cluster ) );
 
-    return count;
+    // create the directory listing
+    directory_t dir;
+    dir.count = count;
+    dir.files = files;
+
+    return dir;
 }

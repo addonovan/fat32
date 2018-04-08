@@ -2,6 +2,7 @@
 #include <filesystem.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <io.h>
 #include "macros.h"
 
 int main()
@@ -13,25 +14,26 @@ int main()
     require( "%u", 1049600u, fs.clusters );
 
     // test the contents of the root directory
-    file_t files[ 16 ];
-    unsigned int count = filesystem_list( &fs, files );
-    printf( "count = %d\n", count );
+    directory_t dir = filesystem_list( &fs );
+
+    printf( "count = %d\n", dir.count );
     unsigned int i;
-    for ( i = 0; i < count; i++ )
+    for ( i = 0; i < dir.count; i++ )
     {
-        printf( 
+        printf(
             "%2d: %8s %3s (%c%c%c%c%c%c)\n", 
-            i, 
-            files[ i ].name, 
-            files[ i ].ext,
-            files[ i ].attrs.read_only  ? 'R' : '-',
-            files[ i ].attrs.hidden     ? 'h' : '-',
-            files[ i ].attrs.system     ? 's' : '-',
-            files[ i ].attrs.volume_id  ? 'v' : '-',
-            files[ i ].attrs.directory  ? 'D' : '-',
-            files[ i ].attrs.archive    ? 'A' : '-'
+            i,
+            dir.files[ i ].name,
+            dir.files[ i ].ext,
+            dir.files[ i ].attrs.read_only  ? 'R' : '-',
+            dir.files[ i ].attrs.hidden     ? 'h' : '-',
+            dir.files[ i ].attrs.system     ? 's' : '-',
+            dir.files[ i ].attrs.volume_id  ? 'v' : '-',
+            dir.files[ i ].attrs.directory  ? 'D' : '-',
+            dir.files[ i ].attrs.archive    ? 'A' : '-'
         );
     }
+    free( dir.files );
 
     return 0;
 }

@@ -25,6 +25,9 @@ typedef uint32_t    sector_t;
 typedef uint32_t    cluster_t;
 
 typedef struct filesystem_t filesystem_t;
+typedef struct directory_t  directory_t;
+
+#include <file.h>
 
 /**
  * A structure representing a FAT32 filesystem.
@@ -48,7 +51,18 @@ struct filesystem_t
 
 };
 
-#include <file.h>
+/**
+ * A directory listing.
+ *
+ * [files] is an pointer to a section of unmanaged, untracked
+ * heap memory, so please free that after you are done.
+ */
+struct directory_t
+{
+    unsigned int    count;
+
+    file_t*         files;
+};
 
 /**
  * Initializes the filesystem and opens the file with the given name.
@@ -59,10 +73,8 @@ struct filesystem_t
 bool filesystem_init( filesystem_t*, const char* file_name );
 
 /**
- * Lists the files in the current working directory. This will write
- * up to 16 files into the `files` parameter, but return the number
- * of files actually written.
+ * Lists the files in the current working directory.
  */
-unsigned int filesystem_list( filesystem_t*, file_t* files );
+directory_t filesystem_list( filesystem_t* );
 
 #endif
