@@ -1,9 +1,14 @@
 #include <bootsector.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 bool bootsector_init( bootsector_t* this, FILE* file )
 {
+    // this prevents null terminators from happening to show up
+    // even if there's a problem in our code.
+    memset( this, -1, sizeof( *this ) );
+
     fseek( file, 3, SEEK_SET );
     if ( fread( this->oem_name, 8, 1, file ) != 1 )
     {
