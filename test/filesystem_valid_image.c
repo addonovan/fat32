@@ -16,23 +16,14 @@ int main()
     // test the contents of the root directory
     directory_t dir = filesystem_list( &fs );
 
-    printf( "count = %d\n", dir.count );
-    unsigned int i;
-    for ( i = 0; i < dir.count; i++ )
-    {
-        printf(
-            "%2d: %8s %3s (%c%c%c%c%c%c)\n", 
-            i,
-            dir.files[ i ].name,
-            dir.files[ i ].ext,
-            dir.files[ i ].attrs.read_only  ? 'R' : '-',
-            dir.files[ i ].attrs.hidden     ? 'h' : '-',
-            dir.files[ i ].attrs.system     ? 's' : '-',
-            dir.files[ i ].attrs.volume_id  ? 'v' : '-',
-            dir.files[ i ].attrs.directory  ? 'D' : '-',
-            dir.files[ i ].attrs.archive    ? 'A' : '-'
-        );
-    }
+    require( "%u", 7u, dir.count );
+    str_require( "BAR     ", dir.files[ 0 ].name );
+    str_require( "NUM     ", dir.files[ 1 ].name );
+    str_require( "DEADBEEF", dir.files[ 2 ].name );
+    str_require( "FOO     ", dir.files[ 3 ].name );
+    str_require( "FOLDERA ", dir.files[ 4 ].name );
+    str_require( "FATSPEC ", dir.files[ 5 ].name );
+    str_require( "FOLDERB ", dir.files[ 6 ].name );
     free( dir.files );
 
     return 0;
