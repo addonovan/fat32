@@ -4,14 +4,16 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define var( name, value ) __typeof__( value ) name = value
+
 #define require( formatter, expected, actual )\
     {\
-        typeof( actual ) ex_actual = actual;\
-        typeof( expected ) ex_expected = expected;\
+        var( ex_actual, actual );\
+        var( ex_expected, expected );\
         if ( ex_actual != ex_expected )\
         {\
             printf( "FAILED %s:%d\n", __FILE__, __LINE__ );\
-            printf( "\tassert " #actual " == " #expected "\n" );\
+            printf( "\tassert %s == %s\n", #actual, #expected );\
             printf( "\t\tExpected: " formatter "\n", ex_expected );\
             printf( "\t\tActual:   " formatter "\n", ex_actual );\
             exit( 1 );\
@@ -34,7 +36,7 @@
 
 #define require_nonnull( actual )\
     {\
-        typeof( actual ) ex_actual = actual;\
+        var( ex_actual, actual );\
         if ( ex_actual == NULL )\
         {\
             printf( "FAILED %s:%d\n", __FILE__, __LINE__ );\
