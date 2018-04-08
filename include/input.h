@@ -22,11 +22,10 @@ void input_read( input_t*, FILE* stream );
 
 /**
  * Tries to match the read string against the given format specifier.
- * If the string is matched, then the parameters are filled in with
- * their values; otherwise, the values of the parameters are left
- * undefined.
+ * If a string is only partially matched, all the variables up to the
+ * first failure is filled in.
  *
- * Returns if the format matched the given line of input.
+ * Returns the number of filled variables that were matched
  */
 int input_matches( input_t*, const char* format, ... );
 
