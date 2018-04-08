@@ -6,7 +6,6 @@
 #include <stdint.h>
 
 typedef struct file_attrs_t     file_attrs_t;
-typedef struct file_status_t    file_status_t;
 typedef struct file_t           file_t;
 
 #include <filesystem.h>
