@@ -127,3 +127,47 @@ bool file_read( file_t* this, void* buff )
 
 }
 
+char* to_uppercase( const char* src )
+{
+    char* copy = strdup( src );
+
+    char* current = copy;
+    while ( *current != '\0' )
+    {
+        if ( *current >= 'a' && *current <= 'z' )
+        {
+            *current -= ( 'a' - 'A' );
+        }
+        current++;
+    }
+
+    return copy;
+}
+
+bool file_name( file_t* this, const char* name, const char* ext )
+{
+    bool status;
+
+    // convert the name to uppercase and check if they're the same
+    char* name_cpy = to_uppercase( name );
+    status = strcmp( this->name, name_cpy ) == 0;
+    free( name_cpy );
+
+    // if the name doesn't match, just give up
+    if ( !status )
+        return false;
+
+    // => name matches
+
+    // if we have no extension, then we just need to check if we're a directory
+    if ( ext == NULL )
+        return this->attrs.directory;
+
+    // convert the extension to uppercase and check if they're the same
+    char* ext_cpy = to_uppercase( ext );
+    status = strcmp( this->ext, ext_cpy ) == 0;
+    free( ext_cpy );
+
+    // => name and extensions matches (we're good!)
+    return status;
+}

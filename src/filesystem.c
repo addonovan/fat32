@@ -103,12 +103,8 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
     {
         file_t file = dir.files[ i ];
 
-        // disregard anything that isn't a directory
-        if ( !file.attrs.directory )
-            continue;
-
         // compare the names
-        if ( strcmp( dir_name, file.name ) != 0 )
+        if ( !file_name( &file, dir_name, NULL ) )
             continue;
 
         // hey, they matched!

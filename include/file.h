@@ -77,4 +77,12 @@ bool file_read( file_t*, void* buf );
  */
 bool file_displayable( file_t* );
 
+/**
+ * Checks if this file's name matches the given `name` and `ext`.
+ * This is case-insensitive.
+ *
+ * If `ext` is `NULL`, then the file is treated as a directory.
+ */
+bool file_name( file_t*, const char* name, const char* ext );
+
 #endif
