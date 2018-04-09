@@ -127,6 +127,10 @@ bool file_read( file_t* this, void* buff )
 
 }
 
+/**
+ * Copies the string and converts it to uppercase. This new string
+ * needs to be free'd manually, else you'll be leaking memory.
+ */
 char* to_uppercase( const char* src )
 {
     char* copy = strdup( src );
