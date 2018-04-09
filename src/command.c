@@ -7,22 +7,36 @@
 // Macros for command DSL
 //
 
-#define UNIMPLEMENTED()\
-    printf( "%s: not yet implemented\n", argv[ 0 ] );\
-    return true;
+/** Converts the command's name into a special name to prevent duplicates */
+#define COMMAND_FUNC( name ) command_##name
 
-#define COMMAND_FUNC( name ) sys_##name
-
+/**
+ * Defines a new method that will look like this:
+ *
+ * ```c
+ * void sys_${name}( filesystem_t** fs, int argc, char** argv )
+ * {
+ *   int i = 0;
+ *   ${block}()
+ * }
+ * ```
+ */
 #define COMMAND( name, block )\
-    bool COMMAND_FUNC( name ) ( filesystem_t** fs, int argc, char** argv )\
+    void COMMAND_FUNC( name ) ( filesystem_t** fs, int argc, char** argv )\
     {\
         int i = 0;\
         ( void )( i );\
         ( void )( argc );\
         block\
-        return true;\
     }
 
+/** 
+ * Tries to run the command with the given name.
+ *
+ * If the name matches the command's name, then it will try to
+ * run the command, and afterwars will return true to denote that
+ * a command has been found.
+ */
 #define TRY_COMMAND( command )\
     if ( strcmp( argv[ 0 ], #command ) == 0 )\
     {\
@@ -30,29 +44,44 @@
         return true;\
     }\
 
+/** Defines a command with the name `alias` that simply calls `command` */
 #define ALIAS( command, alias )\
     COMMAND( alias, {\
         COMMAND_FUNC( command )( fs, argc, argv );\
     } );\
 
+
+/** Prints a message that the command has not yet been implemented */
+#define UNIMPLEMENTED()\
+    printf( "%s: not yet implemented\n", argv[ -1 ] );\
+    return;
+
+/** Requires that `cond` be true. If it isn't then `text` is printed out. */
 #define REQUIRE( text, cond )\
     if ( !( cond ) )\
     {\
         printf( "%s: %s\n", argv[ -1 ], text );\
-        return true;\
+        return;\
     }
 
+/** Requires that there be a mounted filesystem to run a command. */
 #define REQUIRE_FS() REQUIRE( "No filesystem mounted", *fs != NULL )
 
-
+/** Parses an argument as a char*. See ARG */
 #define STRING( data ) data
+
+/** Parses an argument as an integer. See ARG */
 #define INTEGER( data ) atoi( data )
 
+/** 
+ * Tries to parse the next argument with `parser` and will save
+ * the value to the variable named `name`.
+ */
 #define ARG( name, parser )\
     if ( i == argc )\
     {\
         printf( "Missing argument: %s\n", #name );\
-        return true;\
+        return;\
     }\
     else\
     {\
