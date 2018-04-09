@@ -133,49 +133,50 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
 
 //G:
 
-bool filesystem_close( filesystem_t* this, const char* file_name)
+bool filesystem_close(filesystem_t* this)
 {   
-    //info command complete structure wise, thinking to store it into a struct in main? I am not sure yet
-    //file can not close if not at opened first 
-    if(!filesystem_init(this, file_name))
+
+    fclose( this->_file);
+
+    if(fclose(this->_file)!= 0)
     {
         perror("File system not open");
         return false;
     }
     else
     {
-        //close the image file
-        fclose( this->_file);
         return true;
     }
 }
 
-void infoSec(filesystem_t* this, bootsector_t boot)
+void info(filesystem_t* this, bootsector_t boot)
 {
-    if(fclose(this->_file))
+
+    if(this->_file)
+    {
+        printf( "\nBPB_BytesPerSector (base 10) = %d\n", boot.bytes_per_sector );
+        deciToHex(boot.bytes_per_sector);
+
+        printf( "\nBPB_SectorsPerClus = %d\n", boot.sectors_per_cluster );
+        deciToHex(boot.sectors_per_cluster);
+
+        printf( "\nBPB_RsvdSecCnt = %d\n", boot.reserved_sector_count );
+        deciToHex(boot.reserved_sector_count);
+
+        printf( "\nBPB_NumFATS = %d\n", boot.fat_count );
+        deciToHex(boot.fat_count);
+
+        printf( "\nBPB_FATSz32 = %d\n", boot.fat_sector_count );
+        deciToHex(boot.fat_sector_count);
+    }
+    else
     {
         perror("File system image must be opened first");
         return;
     }
 
-    printf( "\nBPB_BytesPerSector (base 10) = %d\n", boot.bytes_per_sector );
-    deciToHex(boot.bytes_per_sector);
-
-    printf( "\nBPB_SectorsPerClus = %d\n", boot.sectors_per_cluster );
-    deciToHex(boot.sectors_per_cluster);
-
-    printf( "\nBPB_RsvdSecCnt = %d\n", boot.reserved_sector_count );
-    deciToHex(boot.reserved_sector_count);
-
-    printf( "\nBPB_NumFATS = %d\n", boot.fat_count );
-    deciToHex(boot.fat_count);
-
-    printf( "\nBPB_FATSz32 = %d\n", boot.fat_sector_count );
-    deciToHex(boot.fat_sector_count);
-
 }
 
-//possible to do a different algorithm for it
 void deciToHex(int num)
 {
     int temp = 0;
@@ -209,6 +210,78 @@ void deciToHex(int num)
 
 }
 
+//Go back to fix just reading for the first cluster
+void stat(filesystem_t* this, const char* file_name ,const char* dir_name)
+{
+    if(dir_name || file_name)
+    {
+        directory_t dir = filesystem_list( this );
+
+        unsigned int i;
+        for ( i = 0u; i < dir.count; i++ )
+        {
+            file_t file = dir.files[ i ];
+
+            if ( file.attrs.directory )
+            {
+                if ( strcmp( file.name, file_name ) == 0 )
+                {
+                    //need to look back at type :/
+                    printf("\nAttribute: , Size: %d, Starting Cluster Number: %d", /*file.attrs*/ file.size, file.cluster_low);
+                }
+                else if(strcmp( dir_name, file.name ) == 0)
+                {
+                    //need to look back at type :/
+                    printf("\nAttribute: , Size: 0, Starting Cluster Number: %d", /*file.attrs*/ file.cluster_low);
+                }
+            }
+            
+            free( dir.files );
+
+        }
+    }
+    else
+    {
+        perror("File not found");
+        return;
+    }
+}
 
 
+//void get(filesystem_t* this, const char* file_name)
+//{    //I don't think this is correct, need to start over
+    /*if(this->cwd && file_name)
+    {
+        directory_t dir = filesystem_list( this );
+
+        unsigned int i;
+        for ( i = 0u; i < dir.count; i++ )
+        {
+            file_t file = dir.files[ i ];
+
+            if ( file.attrs.directory )
+            {
+                if ( strcmp( file.name, file_name ) == 0)
+                {
+                    file.
+                }
+            }
+        }
+        free( dir.files );
+
+    }
+    else
+    {
+        perror("File not found");
+        return;
+    }
+    */
+//}
+
+/*
+void read(filesystem_t* this, int postion, int numOfBytes)
+{
+
+}
+*/
 

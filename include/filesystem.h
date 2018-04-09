@@ -89,11 +89,16 @@ bool filesystem_cd( filesystem_t*, const char* dir_name );
 
 //G:
 
-bool filesystem_close( filesystem_t*, const char* file_name  );
+bool filesystem_close( filesystem_t*);
 
-void infoSec(filesystem_t*, bootsector_t boot);
+void info(filesystem_t*, bootsector_t boot);
 
 void deciToHex(int num);
-//info command complete structure wise, thinking to store it into a struct in main? I am not sure yet
+
+void stat(filesystem_t*, const char* file_name ,const char* dir_name);
+
+void get(filesystem_t*, const char* file_name); 
+
+//void read(filesystem_t*, int postion, int numOfBytes);
 
 #endif
