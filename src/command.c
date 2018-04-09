@@ -63,15 +63,15 @@ COMMAND( open, {
     char* file_name;
     ARG( file_name, STRING );
 
-    *fs = malloc( sizeof( **fs ) );
-    if ( filesystem_init( *fs, file_name ) )
+    filesystem_t* new_fs = malloc( sizeof( **fs ) );
+    if ( filesystem_init( new_fs, file_name ) )
     {
         printf( "Mounted %s\n", file_name );
+        *fs = new_fs;
     }
     else
     {
-        printf( "Failed to mount %s\n", file_name );
-        printf( "Are you sure this is a valid fat32 image?\n" );
+        free( *fs );
     }
 } );
 
