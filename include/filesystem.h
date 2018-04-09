@@ -87,7 +87,13 @@ directory_t filesystem_list( filesystem_t* );
  */
 bool filesystem_cd( filesystem_t*, const char* dir_name );
 
+//G:
+
 bool filesystem_close( filesystem_t*, const char* file_name  );
 
+void infoSec(filesystem_t*, bootsector_t boot);
+
+void deciToHex(int num);
+//info command complete structure wise, thinking to store it into a struct in main? I am not sure yet
 
 #endif

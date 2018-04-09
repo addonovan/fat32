@@ -7,11 +7,11 @@
 
 //To have commands not go through after close the file if statement will be made for ex:
 /*
-if(filesytem_close(...)
-{
-    perror("File system image must be opened first")
-    return false;
-}
+if(fclose(this->_file))
+    {
+        perror("File system image must be opened first");
+        return;
+    }
 */
 
 bool filesystem_init( filesystem_t* this, const char* file_name )
@@ -49,6 +49,7 @@ bool filesystem_init( filesystem_t* this, const char* file_name )
 
     return true;
 }
+
 
 directory_t filesystem_list( filesystem_t* this )
 {
@@ -130,19 +131,84 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
     return false;
 }
 
+//G:
+
 bool filesystem_close( filesystem_t* this, const char* file_name)
-{
-    //close the image file
-    this->_file = fclose( file_name);
-    
+{   
+    //info command complete structure wise, thinking to store it into a struct in main? I am not sure yet
     //file can not close if not at opened first 
-    if(!fopen(file_name, "r"));
+    if(!filesystem_init(this, file_name))
     {
         perror("File system not open");
         return false;
     }
-
-    return true;
+    else
+    {
+        //close the image file
+        fclose( this->_file);
+        return true;
+    }
 }
+
+void infoSec(filesystem_t* this, bootsector_t boot)
+{
+    if(fclose(this->_file))
+    {
+        perror("File system image must be opened first");
+        return;
+    }
+
+    printf( "\nBPB_BytesPerSector (base 10) = %d\n", boot.bytes_per_sector );
+    deciToHex(boot.bytes_per_sector);
+
+    printf( "\nBPB_SectorsPerClus = %d\n", boot.sectors_per_cluster );
+    deciToHex(boot.sectors_per_cluster);
+
+    printf( "\nBPB_RsvdSecCnt = %d\n", boot.reserved_sector_count );
+    deciToHex(boot.reserved_sector_count);
+
+    printf( "\nBPB_NumFATS = %d\n", boot.fat_count );
+    deciToHex(boot.fat_count);
+
+    printf( "\nBPB_FATSz32 = %d\n", boot.fat_sector_count );
+    deciToHex(boot.fat_sector_count);
+
+}
+
+//possible to do a different algorithm for it
+void deciToHex(int num)
+{
+    int temp = 0;
+    char hexadecimal[50];
+
+    int i = 0;
+
+    int a;
+
+    while(num != 0)
+    {
+        temp = num%16;
+
+        if(temp < 10)
+        {
+            hexadecimal[i++] = 48 + temp;
+        }
+        else
+        {
+            hexadecimal[i++] = 55 + temp;
+        }
+
+        num = num/16;
+    }
+
+    printf("\n(hexadecimal) = ");
+    for(a = i; a >= 0; a--)
+    {
+        printf("%c", hexadecimal[a]);
+    }
+
+}
+
+
 
 
