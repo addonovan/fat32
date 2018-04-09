@@ -150,6 +150,11 @@ COMMAND( cd, {
 
     // continually cd on every path spec
     char* token = strtok( file_name, DELIMITTER );
+
+    // if it's blank, then we're an absolute path from the root
+    // so, let's navigate back up to the root directory again
+    while ( filesystem_cd( *fs, ".." ) );
+
     while ( token != NULL && filesystem_cd( *fs, token ) )
     {
         token = strtok( NULL, DELIMITTER );
