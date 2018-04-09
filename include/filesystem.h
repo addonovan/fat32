@@ -89,13 +89,11 @@ bool filesystem_cd( filesystem_t*, const char* dir_name );
 
 //G:
 
-bool filesystem_close( filesystem_t*);
+void filesystem_close(filesystem_t*);
 
-void info(filesystem_t*, bootsector_t boot);
+void info(filesystem_t*);
 
-void deciToHex(int num);
-
-void stat(filesystem_t*, const char* file_name ,const char* dir_name);
+void stat(filesystem_t*, const char* file_name);
 
 void get(filesystem_t*, const char* file_name); 
 

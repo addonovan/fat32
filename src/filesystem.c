@@ -133,118 +133,82 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
 
 //G:
 
-bool filesystem_close(filesystem_t* this)
+void filesystem_close(filesystem_t* this)
 {   
-
     fclose( this->_file);
-
-    if(fclose(this->_file)!= 0)
-    {
-        perror("File system not open");
-        return false;
-    }
-    else
-    {
-        return true;
-    }
 }
 
-void info(filesystem_t* this, bootsector_t boot)
+void info(filesystem_t* this)
 {
+    bootsector_t boot = this->_boot;
 
-    if(this->_file)
-    {
-        printf( "\nBPB_BytesPerSector (base 10) = %d\n", boot.bytes_per_sector );
-        deciToHex(boot.bytes_per_sector);
+    printf( "\nBPB_BytesPerSector (base 10) = %d, (hexadecimal) = %x \n", boot.bytes_per_sector, boot.bytes_per_sector );
 
-        printf( "\nBPB_SectorsPerClus = %d\n", boot.sectors_per_cluster );
-        deciToHex(boot.sectors_per_cluster);
+    printf( "\nBPB_SectorsPerClus (base 10) = %d, (hexadecimal) = %x\n", boot.sectors_per_cluster, boot.sectors_per_cluster );
 
-        printf( "\nBPB_RsvdSecCnt = %d\n", boot.reserved_sector_count );
-        deciToHex(boot.reserved_sector_count);
+    printf( "\nBPB_RsvdSecCnt (base 10) = %d, (hexadecimal) = %x\n", boot.reserved_sector_count, boot.reserved_sector_count );
 
-        printf( "\nBPB_NumFATS = %d\n", boot.fat_count );
-        deciToHex(boot.fat_count);
+    printf( "\nBPB_NumFATS (base 10) = %d, (hexadecimal) = %x\n", boot.fat_count, boot.fat_count );
 
-        printf( "\nBPB_FATSz32 = %d\n", boot.fat_sector_count );
-        deciToHex(boot.fat_sector_count);
-    }
-    else
-    {
-        perror("File system image must be opened first");
-        return;
-    }
-
-}
-
-void deciToHex(int num)
-{
-    int temp = 0;
-    char hexadecimal[50];
-
-    int i = 0;
-
-    int a;
-
-    while(num != 0)
-    {
-        temp = num%16;
-
-        if(temp < 10)
-        {
-            hexadecimal[i++] = 48 + temp;
-        }
-        else
-        {
-            hexadecimal[i++] = 55 + temp;
-        }
-
-        num = num/16;
-    }
-
-    printf("\n(hexadecimal) = ");
-    for(a = i; a >= 0; a--)
-    {
-        printf("%c", hexadecimal[a]);
-    }
+    printf( "\nBPB_FATSz32 (base 10) = %d, (hexadecimal) = %x\n", boot.fat_sector_count, boot.fat_sector_count );
 
 }
 
 //Go back to fix just reading for the first cluster
-void stat(filesystem_t* this, const char* file_name ,const char* dir_name)
+void stat(filesystem_t* this, const char* file_name)
 {
-    if(dir_name || file_name)
+    directory_t dir = filesystem_list( this );
+
+    unsigned int i;
+    for ( i = 0u; i < dir.count; i++ )
     {
-        directory_t dir = filesystem_list( this );
+        file_t file = dir.files[ i ];
 
-        unsigned int i;
-        for ( i = 0u; i < dir.count; i++ )
+        if ( strcmp( file.name, file_name ) == 0 )
         {
-            file_t file = dir.files[ i ];
-
-            if ( file.attrs.directory )
+            printf("\nAttributes: ");
+            if ( file.attrs.read_only ) 
             {
-                if ( strcmp( file.name, file_name ) == 0 )
-                {
-                    //need to look back at type :/
-                    printf("\nAttribute: , Size: %d, Starting Cluster Number: %d", /*file.attrs*/ file.size, file.cluster_low);
-                }
-                else if(strcmp( dir_name, file.name ) == 0)
-                {
-                    //need to look back at type :/
-                    printf("\nAttribute: , Size: 0, Starting Cluster Number: %d", /*file.attrs*/ file.cluster_low);
-                }
+                printf("read only\n");
+            }
+            if( file.attrs.hidden)
+            {
+                printf("hidden\n");
+            }
+            if(file.attrs.system)
+            {
+                printf("hidden\n");
+            }
+            if(file.attrs.volume_id)
+            {
+                printf("volume id\n");
+            }
+            if(file.attrs.archive)
+            {
+                printf("archive\n");
             }
             
-            free( dir.files );
+            if(file.attrs.directory)
+            {
+                printf("directory\n");
+                printf("Size: 0\n"); 
+            }
+            else
+            {
+                printf("Size: %d\n", file.size);
+            }
 
+            printf("Starting Cluster Number: %d\n", file.cluster_low);
+             /*file.attrs*/
+            return;
         }
+
     }
-    else
-    {
-        perror("File not found");
-        return;
-    }
+
+    printf("\nError: File not found\n");
+
+    free( dir.files );
+    
 }
 
 
@@ -272,7 +236,7 @@ void stat(filesystem_t* this, const char* file_name ,const char* dir_name)
     }
     else
     {
-        perror("File not found");
+        printf("File not found");
         return;
     }
     */
