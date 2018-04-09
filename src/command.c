@@ -18,20 +18,27 @@
     {\
         int i = 0;\
         ( void )( i );\
-        if ( strcmp( argv[ 0 ], #name ) != 0 ) return false;\
-        \
         ( void )( argc );\
         block\
         return true;\
     }
 
 #define TRY_COMMAND( command )\
-    if ( COMMAND_FUNC( command )( fs, argc, argv ) ) return true;
+    if ( strcmp( argv[ 0 ], #command ) == 0 )\
+    {\
+        COMMAND_FUNC( command )( fs, argc, argv + 1 );\
+        return true;\
+    }\
+
+#define ALIAS( command, alias )\
+    COMMAND( alias, {\
+        COMMAND_FUNC( command )( fs, argc, argv );\
+    } );\
 
 #define REQUIRE( text, cond )\
     if ( !( cond ) )\
     {\
-        printf( "%s: %s\n", argv[ 0 ], text );\
+        printf( "%s: %s\n", argv[ -1 ], text );\
         return true;\
     }
 
@@ -49,8 +56,8 @@
     }\
     else\
     {\
-        i++;\
         name = parser( *( argv + i ) );\
+        i++;\
     }
 
 //
@@ -74,6 +81,7 @@ COMMAND( open, {
         free( *fs );
     }
 } );
+ALIAS( open, mount );
 
 COMMAND( close, {
     REQUIRE_FS();
@@ -83,6 +91,9 @@ COMMAND( close, {
     fs = NULL;
     UNIMPLEMENTED();
 } );
+ALIAS( close, dismount );
+ALIAS( close, umount );
+ALIAS( close, unmount );
 
 COMMAND( info, {
     REQUIRE_FS();
@@ -163,10 +174,7 @@ COMMAND( quit, {
     REQUIRE( "Please dismount the filesystem first", *fs == NULL );
     exit( 0 );
 } );
-
-COMMAND( exit, {
-    TRY_COMMAND( quit );
-} );
+ALIAS( quit, exit );
 
 //
 // Command Runner
@@ -176,15 +184,29 @@ bool try_commands( filesystem_t** fs, int argc, char** argv )
 {
     TRY_COMMAND( quit );
     TRY_COMMAND( exit );
+
     TRY_COMMAND( open );
+    TRY_COMMAND( mount );
+
     TRY_COMMAND( close );
+    TRY_COMMAND( dismount );
+    TRY_COMMAND( umount );
+    TRY_COMMAND( unmount );
+
     TRY_COMMAND( info );
+
     TRY_COMMAND( stat );
+
     TRY_COMMAND( get );
+
     TRY_COMMAND( cd );
+
     TRY_COMMAND( cd );
+
     TRY_COMMAND( ls );
+
     TRY_COMMAND( read );
+
     TRY_COMMAND( volume );
 
     // couldn't find a command to run
