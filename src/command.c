@@ -153,7 +153,8 @@ COMMAND( cd, {
 
     // if it's blank, then we're an absolute path from the root
     // so, let's navigate back up to the root directory again
-    while ( filesystem_cd( *fs, ".." ) );
+    if ( strlen( token ) == 0 )
+        while ( filesystem_cd( *fs, ".." ) );
 
     while ( token != NULL && filesystem_cd( *fs, token ) )
     {
