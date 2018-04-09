@@ -139,18 +139,31 @@ COMMAND( get, {
     UNIMPLEMENTED();
 } );
 
+#define DELIMITTER "/\\"
 COMMAND( cd, {
     REQUIRE_FS();
 
     char* file_name;
     ARG( file_name, STRING );
 
-    if ( !filesystem_cd( *fs, file_name ) )
+    cluster_t cwd = ( **fs ).cwd;
+
+    // continually cd on every path spec
+    char* token = strtok( file_name, DELIMITTER );
+    while ( token != NULL && filesystem_cd( *fs, token ) )
     {
+        token = strtok( NULL, DELIMITTER );
+    }
+
+    if ( token != NULL )
+    {
+        // revert to previous directory
+        ( **fs ).cwd = cwd;
         printf( "No such directory: %s\n", file_name );
         printf( "Are you sure it's a directory?\n" );
     }
 } );
+#undef DELIMITTER
 
 COMMAND( ls, {
     REQUIRE_FS();

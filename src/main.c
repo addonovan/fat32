@@ -8,6 +8,12 @@
 #define MAX_ARG_LENGTH      512
 #define MAX_ARGS            MAX_LINE_LENGTH / ( MAX_ARG_LENGTH )
 
+/**
+ * Reads a single line of input from `stdin` into `line`, then splits
+ * it into tokens by whitespace and writes pointers to each in `argv`.
+ * 
+ * Returns the number of arguments filled into `argv`.
+ */
 int read_line( char* line, char** argv );
 
 int main()
