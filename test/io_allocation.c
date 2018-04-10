@@ -4,6 +4,8 @@
 
 int main()
 {
+    test_init();
+
     filesystem_t fs;
     filesystem_init( &fs, "res/fat32.img" );
 

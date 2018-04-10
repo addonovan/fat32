@@ -5,6 +5,8 @@
 
 int main()
 {
+    test_init();
+
     filesystem_t fs;
     require( "%d", true, filesystem_init( &fs, "res/fat32.img" ) );
 
