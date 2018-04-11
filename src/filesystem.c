@@ -36,7 +36,7 @@ bool filesystem_init( filesystem_t* this, const char* file_name )
     this->clusters = this->fat + ( size_fat * this->_boot.fat_count );
 
     // we start off in the root directory
-    this->cwd = 2; // for some reason 2 is actually the root directory???
+    this->cwd = this->_boot.root_cluster; // for some reason 2 is actually the root directory???
 
     return true;
 }
@@ -114,7 +114,7 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
 
         // oh boy, gotta love this hack
         if ( this->cwd == 0 )
-            this->cwd = 2;
+            this->cwd = this->_boot.root_cluster;
 
         return true;
     }
