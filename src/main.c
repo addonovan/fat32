@@ -31,7 +31,14 @@ int main()
 
     while ( true )
     {
-        printf( "mfs> " );
+        if ( fs != NULL && fs->dir[ 0 ] != '\0' )
+        {
+            printf( "mfs:%s> ", fs->dir );
+        }
+        else
+        {
+            printf( "mfs> " );
+        }
 
         // read a single line
         int argc = read_line( line, argv );

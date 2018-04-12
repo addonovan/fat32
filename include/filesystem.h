@@ -49,6 +49,9 @@ struct filesystem_t
     /** The current working directory. */
     cluster_t       cwd;
 
+    /** The current path, as a string, for the prompt. */
+    char*           dir;
+
 };
 
 /**

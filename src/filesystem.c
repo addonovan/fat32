@@ -38,6 +38,9 @@ bool filesystem_init( filesystem_t* this, const char* file_name )
     // we start off in the root directory
     this->cwd = this->_boot.root_cluster; // for some reason 2 is actually the root directory???
 
+    this->dir = calloc( sizeof( char ), 2 );
+    this->dir[ 0 ] = '/';
+
     return true;
 }
 
@@ -119,6 +122,30 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
         if ( this->cwd == 0 )
             this->cwd = this->_boot.root_cluster;
 
+        if ( strcmp( file.name, ".." ) == 0 )
+        {
+            // cut the dir at the last slash
+            int j = strlen( this->dir ) - 1;
+            this->dir[ j ] = '\0';
+            for ( j = j - 1; j >= 0 && this->dir[ j ] != '/'; j-- )
+            {
+                this->dir[ j ] = '\0';
+            }
+        }
+        else if ( strcmp( file.name, "." ) == 0 )
+        {
+            // don't do anything to the path
+        }
+        else
+        {
+            int dir_length = strlen( this->dir );
+            int name_length = strlen( file.name );
+            this->dir = realloc( this->dir, dir_length + name_length + 2 );
+            memcpy( this->dir + dir_length, file.name, name_length );
+            this->dir[ dir_length + name_length + 0 ] = '/';
+            this->dir[ dir_length + name_length + 1 ] = '\0';
+        }
+
         return true;
     }
 
@@ -130,7 +157,8 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
 
 void filesystem_close(filesystem_t* this)
 {   
-    fclose( this->_file);
+    fclose( this->_file );
+    free( this->dir );
 }
 
 void filesystem_info(filesystem_t* this)

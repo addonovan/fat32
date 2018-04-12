@@ -14,6 +14,7 @@ int main()
 
     require( "%u", 16384u,  fs.fat );
     require( "%u", 1049600u, fs.clusters );
+    str_require( "/", fs.dir );
 
     // test the contents of the root directory
     directory_t dir = filesystem_list( &fs );
@@ -42,6 +43,7 @@ int main()
     // test changing directories
     require( "%d", true, filesystem_cd( &fs, "FOLDERA" ) );
     require( "%u", 6099u, fs.cwd );
+    str_require( "/FOLDERA/", fs.dir );
 
     // ensure that filesystem_list works in more than the root dir
     dir = filesystem_list( &fs );
@@ -54,6 +56,7 @@ int main()
     // test the . special file
     require( "%d", true, filesystem_cd( &fs, "." ) );
     require( "%u", 6099u, fs.cwd );
+    str_require( "/FOLDERA/", fs.dir );
     dir = filesystem_list( &fs );
     require( "%u", 3u, dir.count );
     free( dir.files );
@@ -61,6 +64,7 @@ int main()
     // test the .. special file
     require( "%d", true, filesystem_cd( &fs, ".." ) );
     require( "%u", 2u, fs.cwd );
+    str_require( "/", fs.dir );
     dir = filesystem_list( &fs );
     require( "%u", 7u, dir.count );
     free( dir.files );
