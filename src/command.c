@@ -26,7 +26,9 @@
     {\
         int i = 0;\
         ( void )( i );\
+        ( void )( fs );\
         ( void )( argc );\
+        ( void )( argv );\
         block\
     }
 
@@ -246,6 +248,10 @@ COMMAND( quit, {
 } );
 ALIAS( quit, exit );
 
+COMMAND( clear, {
+    system( "clear" );
+} );
+
 //
 // Command Runner
 //
@@ -278,6 +284,8 @@ bool try_commands( filesystem_t** fs, int argc, char** argv )
     TRY_COMMAND( read );
 
     TRY_COMMAND( volume );
+
+    TRY_COMMAND( clear );
 
     // couldn't find a command to run
     return false;
