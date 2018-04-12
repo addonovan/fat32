@@ -33,6 +33,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/mman.h>
 
@@ -79,6 +80,7 @@
         );\
         printf( "=======================================\n" );\
         printf( "\n\n" );\
+        return 0;\
     }\
     void handler( int sig )\
     {\

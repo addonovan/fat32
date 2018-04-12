@@ -6,7 +6,7 @@
 
 #define _concat(a, b) a##b
 #define concat(a, b) _concat(a, b)
-#define padding( size ) uint8_t concat(_, __COUNTER__)[ size ]
+#define padding( size ) uint8_t concat(_, __LINE__)[ size ]
 
 typedef struct __attribute__((__packed__))
 {
@@ -73,12 +73,12 @@ void file_init( file_t* this, const filesystem_t* fs, offset_t start )
 
     // read the attributes into a more human-friendly manner
     uint8_t attrs = raw.attributes;
-    this->attrs.read_only     = ( attrs & 0b00000001 ) != 0;
-    this->attrs.hidden        = ( attrs & 0b00000010 ) != 0;
-    this->attrs.system        = ( attrs & 0b00000100 ) != 0;
-    this->attrs.volume_id     = ( attrs & 0b00001000 ) != 0;
-    this->attrs.directory     = ( attrs & 0b00010000 ) != 0;
-    this->attrs.archive       = ( attrs & 0b00100000 ) != 0;
+    this->attrs.read_only     = ( attrs & 0x01 ) != 0;
+    this->attrs.hidden        = ( attrs & 0x02 ) != 0;
+    this->attrs.system        = ( attrs & 0x04 ) != 0;
+    this->attrs.volume_id     = ( attrs & 0x08 ) != 0;
+    this->attrs.directory     = ( attrs & 0x10 ) != 0;
+    this->attrs.archive       = ( attrs & 0x20 ) != 0;
 
     this->cluster_low = raw.cluster_low;
     this->cluster_high = raw.cluster_high;
