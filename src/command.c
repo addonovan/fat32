@@ -80,7 +80,7 @@
  * the value to the variable named `name`.
  */
 #define ARG( name, parser )\
-    if ( i == argc )\
+    if ( i == argc - 1 )\
     {\
         printf( "Missing argument: %s\n", #name );\
         return;\
@@ -109,7 +109,7 @@ COMMAND( open, {
     }
     else
     {
-        free( *fs );
+        free( new_fs );
     }
 } );
 ALIAS( open, mount );
@@ -207,6 +207,7 @@ COMMAND( ls, {
             printf( "%s.%s\n", file.name, file.ext );
         }
     }
+    free( dir.files );
 } );
 
 COMMAND( read, {
