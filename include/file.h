@@ -83,6 +83,6 @@ bool file_displayable( file_t* );
  *
  * If `ext` is `NULL`, then the file is treated as a directory.
  */
-bool file_name( file_t*, const char* name, const char* ext );
+bool file_name( file_t*, const char* name );
 
 #endif

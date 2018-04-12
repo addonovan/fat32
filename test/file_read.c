@@ -16,6 +16,10 @@ int main()
 
     str_require( "BAR", file.name );
     str_require( "TXT", file.ext );
+    require( "%d", true, file_name( &file, "BAR.TXT" ) );
+    require( "%d", true, file_name( &file, "bar.TXT" ) );
+    require( "%d", true, file_name( &file, "BAR.txt" ) );
+    require( "%d", true, file_name( &file, "bar.txt" ) );
 
     // read the first cluster of the file
     char* cluster = io_clalloc( &fs, 1 );

@@ -148,30 +148,43 @@ char* to_uppercase( const char* src )
     return copy;
 }
 
-bool file_name( file_t* this, const char* name, const char* ext )
+bool file_name( file_t* this, const char* name )
 {
+    char* name_cpy = to_uppercase( name );
+
+    const char* ext = NULL;
+    // ignore special files for tokenization
+    if ( strcmp( "..", name ) != 0 && strcmp( ".", name ) != 0 )
+    {
+        strtok( name_cpy, "." );
+        ext = strtok( NULL, "." );
+    }
+
     bool status;
 
     // convert the name to uppercase and check if they're the same
-    char* name_cpy = to_uppercase( name );
     status = strcmp( this->name, name_cpy ) == 0;
-    free( name_cpy );
 
     // if the name doesn't match, just give up
     if ( !status )
+    {
+        free( name_cpy );
         return false;
+    }
 
     // => name matches
 
     // if we have no extension, then we just need to check if we're a directory
     if ( ext == NULL )
+    {
+        free( name_cpy );
         return this->attrs.directory;
+    }
 
     // convert the extension to uppercase and check if they're the same
-    char* ext_cpy = to_uppercase( ext );
-    status = strcmp( this->ext, ext_cpy ) == 0;
-    free( ext_cpy );
+    status = strcmp( this->ext, ext ) == 0;
 
     // => name and extensions matches (we're good!)
+    free( name_cpy );
     return status;
 }
