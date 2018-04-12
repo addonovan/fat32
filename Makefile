@@ -6,7 +6,7 @@ TEST        := test
 OBJ         := obj
 
 CC          := gcc
-CFLAGS      := -Wall -Wextra -Werror -g
+CFLAGS      := -Wall -Wextra -Werror -Warray-bounds -g -O0
 
 LINKER      := gcc
 LFLAGS      := 
@@ -23,6 +23,7 @@ TEST_SRCS   := $(wildcard $(TEST)/*.$(EXT))
 
 OBJS        := $(patsubst $(SRC)/%.$(EXT), $(OBJ)/%.o, $(SRCS))
 MAIN_OBJ    := $(patsubst $(SRC)/%.$(EXT), $(OBJ)/%.o, $(MAIN))
+TEST_OBJS   := $(patsubst $(TEST)/%.$(EXT), $(OBJ)/$(TEST_FMT).o, $(TEST_SRCS))
 
 TEST_BINS   := $(patsubst $(TEST)/%.$(EXT), $(BIN)/$(TEST_FMT), $(TEST_SRCS))
 
@@ -31,9 +32,9 @@ TEST_BINS   := $(patsubst $(TEST)/%.$(EXT), $(BIN)/$(TEST_FMT), $(TEST_SRCS))
 # EXECUTABLES                                                                  #
 ################################################################################
 
-test: build $(TEST_BINS)
+test: CFLAGS+=-DTEST
+test: $(TEST_BINS) $(OBJS) $(TEST_OBJS)
 	@for file in $(TEST_BINS); do\
-		echo "$$file...";\
 		./$$file;\
 		if [ "$$?" != "0" ]; then\
 			echo "";\
@@ -67,8 +68,11 @@ $(OBJ)/%.o: $(SRC)/%.$(EXT)
 
 # Tests
 
-$(BIN)/$(TEST_FMT): $(TEST)/%.$(EXT)
-	$(CC) $(CFLAGS) $(INCLUDE) $(OBJS) $< -o $@
+$(OBJ)/$(TEST_FMT).o: $(TEST)/%.$(EXT)
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+
+$(BIN)/$(TEST_FMT): $(OBJ)/$(TEST_FMT).o $(OBJS)
+	$(LINKER) $(LFLAGS) $(CFLAGS) $(OBJS) $< -o $@
 
 
 ################################################################################

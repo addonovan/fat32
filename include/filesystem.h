@@ -49,6 +49,9 @@ struct filesystem_t
     /** The current working directory. */
     cluster_t       cwd;
 
+    /** The current path, as a string, for the prompt. */
+    char*           dir;
+
 };
 
 /**
@@ -59,8 +62,10 @@ struct filesystem_t
  */
 struct directory_t
 {
+    /** The number of files in this directory. */
     unsigned int    count;
 
+    /** An (unmanaged) list of files in this directory. */
     file_t*         files;
 };
 
@@ -89,14 +94,48 @@ bool filesystem_cd( filesystem_t*, const char* dir_name );
 
 //G:
 
-void filesystem_close(filesystem_t*);
+/**
+ * Closes the given file system's file.
+ */
+void filesystem_close( filesystem_t* );
 
-void info(filesystem_t*);
+/**
+ * Prints filesystem volume information to `stdout`.
+ */
+void filesystem_info( filesystem_t* );
 
-void stat(filesystem_t*, const char* file_name);
+/**
+ * Prints information and statistics for the file with the given `file_name`
+ * in the current working directory.
+ * 
+ * Returns true if the file existed.
+ */
+bool filesystem_stat( filesystem_t*, const char* file_name );
 
-void get(filesystem_t*, const char* file_name); 
+/**
+ * Reads `file_name` from the current work directory and extracts its
+ * contents and writes them to a file with the name `file_name` on the
+ * actual filesystem.
+ *
+ * Returns the final status of the read & write.
+ */
+bool filesystem_get( filesystem_t*, const char* file_name ); 
 
-void read(filesystem_t*, int startOffset, int numOfBytes, const char* file_name, FILE* out);
+/**
+ * Reads `file_name` from the current working directory, starting at
+ * byte `start_offset` and reading `length` bytes, writing those
+ * characters to `out`.
+ *
+ * If `length` is less than 0, then the entire file will be read.
+ *
+ * Returns the final status of the read.
+ */
+bool filesystem_read( 
+    filesystem_t*, 
+    offset_t start_offset, 
+    int length, 
+    const char* file_name, 
+    FILE* out
+);
 
 #endif
