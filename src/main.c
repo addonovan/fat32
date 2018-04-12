@@ -34,9 +34,9 @@ int main()
         printf( "mfs> " );
 
         // read a single line
-        int argc = read_line( line, argv ) - 1;
+        int argc = read_line( line, argv );
 
-        if ( !try_commands( &fs, argc, argv ) )
+        if ( argc > 0 && !try_commands( &fs, argc, argv ) )
         {
             printf( "Unrecognized command: %s\n", argv[ 0 ] );
         }
@@ -48,6 +48,11 @@ int main()
 int read_line( char* line, char** argv )
 {
     fgets( line, MAX_LINE_LENGTH, stdin );
+
+    if ( strlen( line ) == 0 )
+    {
+        return 0;
+    }
 
     // zero out all of the previous argv
     memset( argv, 0, MAX_ARGS * sizeof( char* ) );

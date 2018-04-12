@@ -115,10 +115,9 @@ ALIAS( open, mount );
 COMMAND( close, {
     REQUIRE_FS();
 
-    // filesystem_close( fs );
-    free( fs );
-    fs = NULL;
-    UNIMPLEMENTED();
+    filesystem_close( *fs );
+    free( *fs );
+    *fs = NULL;
 } );
 ALIAS( close, dismount );
 ALIAS( close, umount );
@@ -126,17 +125,27 @@ ALIAS( close, unmount );
 
 COMMAND( info, {
     REQUIRE_FS();
-    UNIMPLEMENTED();
+    filesystem_info( *fs );
 } );
 
 COMMAND( stat, {
     REQUIRE_FS();
-    UNIMPLEMENTED();
+
+    char* file_name;
+
+    ARG( file_name, STRING );
+
+    filesystem_stat( *fs, file_name );
 } );
 
 COMMAND( get, {
     REQUIRE_FS();
-    UNIMPLEMENTED();
+
+    char* file_name;
+
+    ARG( file_name, STRING );
+
+    filesystem_get( *fs, file_name );
 } );
 
 #define DELIMITTER "/\\"
@@ -192,15 +201,15 @@ COMMAND( ls, {
 COMMAND( read, {
     REQUIRE_FS();
 
-    // char* file_name;
-    // offset_t start;
-    // offset_t length;
+    char* file_name;
+    offset_t start;
+    offset_t length;
 
-    // ARG( file_name, STRING );
-    // ARG( start, INTEGER );
-    // ARG( length, INTEGER );
+    ARG( file_name, STRING );
+    ARG( start, INTEGER );
+    ARG( length, INTEGER );
 
-    UNIMPLEMENTED();    
+    filesystem_read( *fs, start, length, file_name, stdout );
 } );
 
 COMMAND( volume, {
