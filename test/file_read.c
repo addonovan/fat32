@@ -20,6 +20,9 @@ int main()
     require( "%d", true, file_name( &file, "bar.TXT" ) );
     require( "%d", true, file_name( &file, "BAR.txt" ) );
     require( "%d", true, file_name( &file, "bar.txt" ) );
+    // negative tests
+    require( "%d", false, file_name( &file, "foo.txt" ) );
+    require( "%d", false, file_name( &file, "foo" ) );
 
     // read the first cluster of the file
     char* cluster = io_clalloc( &fs, 1 );

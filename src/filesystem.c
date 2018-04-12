@@ -133,7 +133,7 @@ void filesystem_close(filesystem_t* this)
     fclose( this->_file);
 }
 
-void info(filesystem_t* this)
+void filesystem_info(filesystem_t* this)
 {
     bootsector_t boot = this->_boot;
 
@@ -213,7 +213,7 @@ void filesystem_get( filesystem_t* this, const char* file_name )
     fclose(out);
 }
 
-void filesystem_read(filesystem_t* this, int startOffset, int numOfBytes, const char* file_name, FILE* out)
+void filesystem_read(filesystem_t* this, int startOffset, int numOfBytes, const char* name, FILE* out)
 {
     directory_t dir = filesystem_list( this );
     unsigned int i;
@@ -221,7 +221,7 @@ void filesystem_read(filesystem_t* this, int startOffset, int numOfBytes, const 
     {
         file_t file = dir.files[ i ];
 
-        if ( strcmp( file.name, file_name ) == 0 )
+        if ( file_name( &file, name ) )
         {
             int size = file.size;
             size /= this->_boot.sectors_per_cluster*this->_boot.bytes_per_sector;

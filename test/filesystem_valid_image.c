@@ -30,13 +30,14 @@ int main()
 
     // test fetching files
 
-    filesystem_get(&fs, "BAR");
-    FILE* bar = fopen("BAR", "r");
+    filesystem_get(&fs, "bar.txt");
+    FILE* bar = fopen("bar.txt", "r");
     char text[9];
     fread(text, 8, 1, bar);
     text[8] = '\0';
     str_require("5 6 7 8\n", text);
     fclose(bar);
+    remove( "bar.txt" );
 
     // test changing directories
     require( "%d", true, filesystem_cd( &fs, "FOLDERA" ) );
