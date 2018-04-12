@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "macros.h"
 
-test( "bootsector", {
+test( "bootsector reader", {
 
     on( "invalid bootsector", {
         FILE* file = fopen( "src/bootsector.c", "r" );

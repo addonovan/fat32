@@ -63,7 +63,7 @@
         tests = create_shared_memory( sizeof( unsigned int ) );\
         test_fails = create_shared_memory( sizeof( unsigned int ) );\
         strcpy( test_desc, description );\
-        printf( "%s\n", test_desc );\
+        printf( "Testing %s\n", test_desc );\
         { block }\
         free( case_desc );\
         free( test_desc );\
@@ -107,7 +107,7 @@
         char desc[] = description;\
         memcpy( case_desc, desc, strlen( desc ) );\
         *tests += 1;\
-        printf( "\t%s\n", case_desc );\
+        printf( "\tOn %s\n", case_desc );\
         pid_t child = fork();\
         if ( child < 0 )\
         {\

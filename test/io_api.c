@@ -2,7 +2,7 @@
 #include <io.h>
 #include "macros.h"
 
-test( "Fundamental IO api", {
+test( "fundamental IO api", {
 
     filesystem_t fs;
     require( "%d", true, filesystem_init( &fs, "res/fat32.img" ) );

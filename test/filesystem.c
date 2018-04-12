@@ -5,8 +5,14 @@
 #include <io.h>
 #include "macros.h"
 
-test( "fileystem with a valid image", {
+test( "entire fileystem reader", {
     filesystem_t fs;
+
+    on( "opening invalid image file", {
+        filesystem_t fs;
+        require( "%d", false, filesystem_init( &fs, "src/filesystem.c" ) );
+    } );
+
     require( "%d", true, filesystem_init( &fs, "res/fat32.img" ) );
 
     on( "browsing root directory", {

@@ -3,12 +3,12 @@
 #include <file.h>
 #include "macros.h"
 
-test( "file reading", {
+test( "file reader", {
     filesystem_t fs;
     require( "%d", true, filesystem_init( &fs, "res/fat32.img" ) );
     file_t file;
 
-    on( "file located", {
+    on( "file entry located", {
         file_init( &file, &fs, fs.clusters );
         str_require( "BAR", file.name );
         str_require( "TXT", file.ext );
