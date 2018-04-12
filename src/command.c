@@ -164,8 +164,6 @@ COMMAND( cd, {
 
     cluster_t cwd = ( **fs ).cwd;
 
-    printf( "> %s\n", file_name );
-
     // if it's blank, then we're an absolute path from the root
     // so, let's navigate back up to the root directory again
     if ( file_name[ 0 ] == '/' )
@@ -188,7 +186,6 @@ COMMAND( cd, {
         // works perfectly fine in main.c on whitespace though
         token = strtok( token + strlen( token ) + 1, DELIMITTER );
     }
-    
 } );
 #undef DELIMITTER
 

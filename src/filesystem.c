@@ -99,7 +99,6 @@ directory_t filesystem_list( filesystem_t* this )
 
 bool filesystem_cd( filesystem_t* this, const char* dir_name )
 {
-    printf( "=> %s\n", dir_name );
     directory_t dir = filesystem_list( this );
 
     unsigned int i;
@@ -147,12 +146,10 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
         }
 
         free( dir.files );
-        printf( "<= true\n" );
         return true;
     }
 
     free( dir.files );
-    printf( "<= false\n" );
     return false;
 }
 
