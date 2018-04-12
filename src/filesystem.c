@@ -303,12 +303,12 @@ bool filesystem_read(
             numOfBytes = file.size;
         }
         memcpy(buffer2, buffer+startOffset, numOfBytes);
-        fprintf(out, "%s", buffer2);
+        bool status = fwrite( buffer2, numOfBytes, 1, out ) == 1;
         free(buffer2);
 
         io_free(buffer);
         free( dir.files );
-        return true;
+        return status;
     }
 
     free( dir.files );
