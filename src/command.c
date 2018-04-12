@@ -155,7 +155,7 @@ COMMAND( get, {
     }
 } );
 
-#define DELIMITTER "/\\"
+#define DELIMITTER "/"
 COMMAND( cd, {
     REQUIRE_FS();
 
@@ -164,26 +164,31 @@ COMMAND( cd, {
 
     cluster_t cwd = ( **fs ).cwd;
 
-    // continually cd on every path spec
-    char* token = strtok( file_name, DELIMITTER );
+    printf( "> %s\n", file_name );
 
     // if it's blank, then we're an absolute path from the root
     // so, let's navigate back up to the root directory again
-    if ( strlen( token ) == 0 )
+    if ( file_name[ 0 ] == '/' )
         while ( filesystem_cd( *fs, ".." ) );
 
-    while ( token != NULL && filesystem_cd( *fs, token ) )
-    {
-        token = strtok( NULL, DELIMITTER );
-    }
+    // continually cd on every path spec
+    char* token = strtok( file_name, DELIMITTER );
 
-    if ( token != NULL )
+    while ( token != NULL )
     {
-        // revert to previous directory
-        ( **fs ).cwd = cwd;
-        printf( "No such directory: %s\n", file_name );
-        printf( "Are you sure it's a directory?\n" );
+        if ( !filesystem_cd( *fs, token ) )
+        {
+            // revert to previous directory
+            ( **fs ).cwd = cwd;
+            printf( "No such directory: %s\n", file_name );
+            printf( "Are you sure it's a directory?\n" );    
+        }
+
+        // no, strtok( NULL ) does not work here for some reason
+        // works perfectly fine in main.c on whitespace though
+        token = strtok( token + strlen( token ) + 1, DELIMITTER );
     }
+    
 } );
 #undef DELIMITTER
 

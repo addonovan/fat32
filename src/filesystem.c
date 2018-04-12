@@ -99,6 +99,7 @@ directory_t filesystem_list( filesystem_t* this )
 
 bool filesystem_cd( filesystem_t* this, const char* dir_name )
 {
+    printf( "=> %s\n", dir_name );
     directory_t dir = filesystem_list( this );
 
     unsigned int i;
@@ -116,7 +117,6 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
         // hey, they matched!
         // let's change the directory to that file's offset, and we're done!
         this->cwd = file.cluster_low;
-        free( dir.files );
 
         // oh boy, gotta love this hack
         if ( this->cwd == 0 )
@@ -146,10 +146,13 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
             this->dir[ dir_length + name_length + 1 ] = '\0';
         }
 
+        free( dir.files );
+        printf( "<= true\n" );
         return true;
     }
 
     free( dir.files );
+    printf( "<= false\n" );
     return false;
 }
 
