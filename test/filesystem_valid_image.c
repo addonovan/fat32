@@ -69,5 +69,12 @@ int main()
     require( "%u", 7u, dir.count );
     free( dir.files );
 
+    // test stat's integrity
+    require( "%d", true, filesystem_stat( &fs, "foo.txt" ) );
+    require( "%d", false, filesystem_stat( &fs, "txt.foo" ) );
+
+    // test file closing
+    filesystem_close( &fs );
+
     return 0;
 }
