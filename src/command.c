@@ -109,7 +109,7 @@ COMMAND( open, {
     }
     else
     {
-        free( *fs );
+        free( new_fs );
     }
 } );
 ALIAS( open, mount );
