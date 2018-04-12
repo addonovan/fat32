@@ -4,6 +4,8 @@
 
 int main()
 {
+    test_init();
+
     FILE* file = fopen( "res/fat32.img", "r" );
     require_nonnull( file );
 

@@ -49,6 +49,9 @@ struct filesystem_t
     /** The current working directory. */
     cluster_t       cwd;
 
+    /** The current path, as a string, for the prompt. */
+    char*           dir;
+
 };
 
 /**
@@ -86,5 +89,17 @@ directory_t filesystem_list( filesystem_t* );
  * directory.
  */
 bool filesystem_cd( filesystem_t*, const char* dir_name );
+
+//G:
+
+void filesystem_close(filesystem_t*);
+
+void filesystem_info(filesystem_t*);
+
+void filesystem_stat(filesystem_t*, const char* file_name);
+
+void filesystem_get(filesystem_t*, const char* file_name); 
+
+void filesystem_read(filesystem_t*, int startOffset, int numOfBytes, const char* file_name, FILE* out);
 
 #endif

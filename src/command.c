@@ -115,10 +115,9 @@ ALIAS( open, mount );
 COMMAND( close, {
     REQUIRE_FS();
 
-    // filesystem_close( fs );
-    free( fs );
-    fs = NULL;
-    UNIMPLEMENTED();
+    filesystem_close( *fs );
+    free( *fs );
+    *fs = NULL;
 } );
 ALIAS( close, dismount );
 ALIAS( close, umount );
@@ -126,31 +125,61 @@ ALIAS( close, unmount );
 
 COMMAND( info, {
     REQUIRE_FS();
-    UNIMPLEMENTED();
+    filesystem_info( *fs );
 } );
 
 COMMAND( stat, {
     REQUIRE_FS();
     UNIMPLEMENTED();
+
+    char* file_name;
+
+    ARG( file_name, STRING );
+
+    filesystem_stat( *fs, file_name );
 } );
 
 COMMAND( get, {
     REQUIRE_FS();
-    UNIMPLEMENTED();
+
+    char* file_name;
+
+    ARG( file_name, STRING );
+
+    filesystem_get( *fs, file_name );
 } );
 
+#define DELIMITTER "/\\"
 COMMAND( cd, {
     REQUIRE_FS();
 
     char* file_name;
     ARG( file_name, STRING );
 
-    if ( !filesystem_cd( *fs, file_name ) )
+    cluster_t cwd = ( **fs ).cwd;
+
+    // continually cd on every path spec
+    char* token = strtok( file_name, DELIMITTER );
+
+    // if it's blank, then we're an absolute path from the root
+    // so, let's navigate back up to the root directory again
+    if ( strlen( token ) == 0 )
+        while ( filesystem_cd( *fs, ".." ) );
+
+    while ( token != NULL && filesystem_cd( *fs, token ) )
     {
+        token = strtok( NULL, DELIMITTER );
+    }
+
+    if ( token != NULL )
+    {
+        // revert to previous directory
+        ( **fs ).cwd = cwd;
         printf( "No such directory: %s\n", file_name );
         printf( "Are you sure it's a directory?\n" );
     }
 } );
+#undef DELIMITTER
 
 COMMAND( ls, {
     REQUIRE_FS();
@@ -173,15 +202,15 @@ COMMAND( ls, {
 COMMAND( read, {
     REQUIRE_FS();
 
-    // char* file_name;
-    // offset_t start;
-    // offset_t length;
+    char* file_name;
+    offset_t start;
+    offset_t length;
 
-    // ARG( file_name, STRING );
-    // ARG( start, INTEGER );
-    // ARG( length, INTEGER );
+    ARG( file_name, STRING );
+    ARG( start, INTEGER );
+    ARG( length, INTEGER );
 
-    UNIMPLEMENTED();    
+    filesystem_read( *fs, start, length, file_name, stdout );
 } );
 
 COMMAND( volume, {

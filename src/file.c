@@ -99,11 +99,92 @@ bool file_displayable( file_t* this )
     return false;
 }
 
-bool file_read( file_t* this, void* buf )
+bool file_read( file_t* this, void* buff )
 {
+    /*
     return io_read_cluster(
         this->fs,
         this->cluster_low,
         buf
     );
+    */
+
+    cluster_t cluster = this->cluster_low;
+
+    do
+    {
+        if(!io_read_cluster(this->fs, cluster, buff))
+        {
+            return false;
+        }
+
+        buff+=(this->fs->_boot.sectors_per_cluster*this->fs->_boot.bytes_per_sector);
+
+    }
+    while(io_next_cluster(this->fs, &cluster));
+
+    return true;
+
+}
+
+/**
+ * Copies the string and converts it to uppercase. This new string
+ * needs to be free'd manually, else you'll be leaking memory.
+ */
+char* to_uppercase( const char* src )
+{
+    char* copy = strdup( src );
+
+    char* current = copy;
+    while ( *current != '\0' )
+    {
+        if ( *current >= 'a' && *current <= 'z' )
+        {
+            *current -= ( 'a' - 'A' );
+        }
+        current++;
+    }
+
+    return copy;
+}
+
+bool file_name( file_t* this, const char* name )
+{
+    char* name_cpy = to_uppercase( name );
+
+    const char* ext = NULL;
+    // ignore special files for tokenization
+    if ( strcmp( "..", name ) != 0 && strcmp( ".", name ) != 0 )
+    {
+        strtok( name_cpy, "." );
+        ext = strtok( NULL, "." );
+    }
+
+    bool status;
+
+    // convert the name to uppercase and check if they're the same
+    status = strcmp( this->name, name_cpy ) == 0;
+
+    // if the name doesn't match, just give up
+    if ( !status )
+    {
+        free( name_cpy );
+        return false;
+    }
+
+    // => name matches
+
+    // if we have no extension, then we just need to check if we're a directory
+    if ( ext == NULL )
+    {
+        free( name_cpy );
+        return this->attrs.directory;
+    }
+
+    // convert the extension to uppercase and check if they're the same
+    status = strcmp( this->ext, ext ) == 0;
+
+    // => name and extensions matches (we're good!)
+    free( name_cpy );
+    return status;
 }

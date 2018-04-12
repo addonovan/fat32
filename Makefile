@@ -35,7 +35,7 @@ TEST_BINS   := $(patsubst $(TEST)/%.$(EXT), $(BIN)/$(TEST_FMT), $(TEST_SRCS))
 test: build $(TEST_BINS) $(OBJS) $(TEST_OBJS)
 	@for file in $(TEST_BINS); do\
 		echo "$$file...";\
-		./$$file 2> /dev/null;\
+		./$$file;\
 		if [ "$$?" != "0" ]; then\
 			echo "";\
 		fi;\

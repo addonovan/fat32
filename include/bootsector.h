@@ -10,7 +10,7 @@ typedef struct bootsector_t bootsector_t;
 
 struct bootsector_t
 {
-    char        oem_name[ 9 ];          // BS_OEMName (1 additional byte for \0)
+    char        oem_name[ 11 ];          // BS_OEMName (1 additional byte for \0)
     int16_t     bytes_per_sector;       // BPB_BytsPerSec
     int8_t      sectors_per_cluster;    // BPB_SecPerClus
     int16_t     reserved_sector_count;  // BPB_RsvdSecCnt

@@ -4,6 +4,8 @@
 
 int main()
 {
+    test_init();
+
     FILE* file = fopen( "src/bootsector.c", "r" );
     require_nonnull( file );
 

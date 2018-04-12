@@ -8,6 +8,12 @@
 #define MAX_ARG_LENGTH      512
 #define MAX_ARGS            MAX_LINE_LENGTH / ( MAX_ARG_LENGTH )
 
+/**
+ * Reads a single line of input from `stdin` into `line`, then splits
+ * it into tokens by whitespace and writes pointers to each in `argv`.
+ * 
+ * Returns the number of arguments filled into `argv`.
+ */
 int read_line( char* line, char** argv );
 
 int main()
@@ -25,12 +31,19 @@ int main()
 
     while ( true )
     {
-        printf( "mfs> " );
+        if ( fs != NULL && fs->dir[ 0 ] != '\0' )
+        {
+            printf( "mfs:%s> ", fs->dir );
+        }
+        else
+        {
+            printf( "mfs> " );
+        }
 
         // read a single line
-        int argc = read_line( line, argv ) - 1;
+        int argc = read_line( line, argv );
 
-        if ( !try_commands( &fs, argc, argv ) )
+        if ( argc > 0 && !try_commands( &fs, argc, argv ) )
         {
             printf( "Unrecognized command: %s\n", argv[ 0 ] );
         }
@@ -42,6 +55,11 @@ int main()
 int read_line( char* line, char** argv )
 {
     fgets( line, MAX_LINE_LENGTH, stdin );
+
+    if ( strlen( line ) == 0 )
+    {
+        return 0;
+    }
 
     // zero out all of the previous argv
     memset( argv, 0, MAX_ARGS * sizeof( char* ) );
