@@ -212,13 +212,11 @@ void get(filesystem_t* this, const char* file_name)
 void read(filesystem_t* this, int startOffset, int numOfBytes, const char* file_name, FILE* out)
 {
     directory_t dir = filesystem_list( this );
-    printf( "dir.count = %d\n", dir.count );
     unsigned int i;
     for ( i = 0u; i < dir.count; i++ )
     {
         file_t file = dir.files[ i ];
 
-        printf( "%s!\n", file.name );
         if ( strcmp( file.name, file_name ) == 0 )
         {
             int size = file.size;
@@ -235,6 +233,7 @@ void read(filesystem_t* this, int startOffset, int numOfBytes, const char* file_
             else
             {
                 buffer2 = malloc(file.size);
+                numOfBytes = file.size;
             }
             memcpy(buffer2, buffer+startOffset, numOfBytes);
             fprintf(out, "%s", buffer2);
