@@ -104,7 +104,10 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
         file_t file = dir.files[ i ];
 
         // compare the names
-        if ( !file_name( &file, dir_name, NULL ) )
+        if ( !file_name( &file, dir_name ) )
+            continue;
+
+        if ( !file.attrs.directory )
             continue;
 
         // hey, they matched!
@@ -147,7 +150,7 @@ void info(filesystem_t* this)
 }
 
 //Go back to fix just reading for the first cluster
-void stat(filesystem_t* this, const char* file_name)
+void filesystem_stat( filesystem_t* this, const char* name )
 {
     directory_t dir = filesystem_list( this );
 
@@ -156,7 +159,7 @@ void stat(filesystem_t* this, const char* file_name)
     {
         file_t file = dir.files[ i ];
 
-        if ( strcmp( file.name, file_name ) == 0 )
+        if ( file_name( &file, name ) )
         {
             printf("\nAttributes: ");
             if ( file.attrs.read_only ) 
@@ -203,14 +206,14 @@ void stat(filesystem_t* this, const char* file_name)
     
 }
 
-void get(filesystem_t* this, const char* file_name)
+void filesystem_get( filesystem_t* this, const char* file_name )
 {
     FILE *out = fopen(file_name, "w+");   
-    read(this, 0, -1, file_name, out);
+    filesystem_read(this, 0, -1, file_name, out);
     fclose(out);
 }
 
-void read(filesystem_t* this, int startOffset, int numOfBytes, const char* file_name, FILE* out)
+void filesystem_read(filesystem_t* this, int startOffset, int numOfBytes, const char* file_name, FILE* out)
 {
     directory_t dir = filesystem_list( this );
     unsigned int i;

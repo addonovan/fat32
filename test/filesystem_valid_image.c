@@ -30,7 +30,7 @@ int main()
 
     // test fetching files
 
-    get(&fs, "BAR");
+    filesystem_get(&fs, "BAR");
     FILE* bar = fopen("BAR", "r");
     char text[9];
     fread(text, 8, 1, bar);

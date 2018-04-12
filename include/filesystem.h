@@ -91,12 +91,12 @@ bool filesystem_cd( filesystem_t*, const char* dir_name );
 
 void filesystem_close(filesystem_t*);
 
-void info(filesystem_t*);
+void filesystem_info(filesystem_t*);
 
-void stat(filesystem_t*, const char* file_name);
+void filesystem_stat(filesystem_t*, const char* file_name);
 
-void get(filesystem_t*, const char* file_name); 
+void filesystem_get(filesystem_t*, const char* file_name); 
 
-void read(filesystem_t*, int startOffset, int numOfBytes, const char* file_name, FILE* out);
+void filesystem_read(filesystem_t*, int startOffset, int numOfBytes, const char* file_name, FILE* out);
 
 #endif
