@@ -80,7 +80,7 @@
  * the value to the variable named `name`.
  */
 #define ARG( name, parser )\
-    if ( i == argc )\
+    if ( i == argc - 1 )\
     {\
         printf( "Missing argument: %s\n", #name );\
         return;\
