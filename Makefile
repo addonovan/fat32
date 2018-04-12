@@ -32,6 +32,10 @@ TEST_BINS   := $(patsubst $(TEST)/%.$(EXT), $(BIN)/$(TEST_FMT), $(TEST_SRCS))
 # EXECUTABLES                                                                  #
 ################################################################################
 
+run: build
+	./$(BIN)/$(PRODUCT)
+.PHONY: run
+
 test: CFLAGS+=-DTEST
 test: $(TEST_BINS) $(OBJS) $(TEST_OBJS)
 	@for file in $(TEST_BINS); do\
@@ -41,10 +45,6 @@ test: $(TEST_BINS) $(OBJS) $(TEST_OBJS)
 		fi;\
 	done
 .PHONY: test
-
-run: build
-	./$(BIN)/$(PRODUCT)
-.PHONY: run
 
 
 ################################################################################
