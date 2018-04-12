@@ -207,6 +207,7 @@ COMMAND( ls, {
             printf( "%s.%s\n", file.name, file.ext );
         }
     }
+    free( dir.files );
 } );
 
 COMMAND( read, {
