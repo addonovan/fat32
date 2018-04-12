@@ -26,6 +26,16 @@ int main()
     str_require( "FOLDERB",     dir.files[ 6 ].name );
     free( dir.files );
 
+    // test fetching files
+
+    get(&fs, "BAR");
+    FILE* bar = fopen("BAR", "r");
+    char text[9];
+    fread(text, 8, 1, bar);
+    text[8] = '\0';
+    str_require("5 6 7 8\n", text);
+    fclose(bar);
+
     // test changing directories
 
     require( "%d", true, filesystem_cd( &fs, "FOLDERA" ) );
@@ -38,6 +48,9 @@ int main()
     str_require( "..",          dir.files[ 1 ].name );
     str_require( "FOLDERC",     dir.files[ 2 ].name );
     free( dir.files );
+
+    filesystem_cd( &fs, ".." );
+
 
     return 0;
 }

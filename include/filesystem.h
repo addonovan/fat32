@@ -87,4 +87,16 @@ directory_t filesystem_list( filesystem_t* );
  */
 bool filesystem_cd( filesystem_t*, const char* dir_name );
 
+//G:
+
+void filesystem_close(filesystem_t*);
+
+void info(filesystem_t*);
+
+void stat(filesystem_t*, const char* file_name);
+
+void get(filesystem_t*, const char* file_name); 
+
+void read(filesystem_t*, int startOffset, int numOfBytes, const char* file_name, FILE* out);
+
 #endif

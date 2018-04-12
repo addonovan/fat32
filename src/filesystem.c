@@ -41,6 +41,7 @@ bool filesystem_init( filesystem_t* this, const char* file_name )
     return true;
 }
 
+
 directory_t filesystem_list( filesystem_t* this )
 {
     // how many entries are inside a single cluster?
@@ -120,3 +121,127 @@ bool filesystem_cd( filesystem_t* this, const char* dir_name )
     free( dir.files );
     return false;
 }
+
+//G:
+
+void filesystem_close(filesystem_t* this)
+{   
+    fclose( this->_file);
+}
+
+void info(filesystem_t* this)
+{
+    bootsector_t boot = this->_boot;
+
+    printf( "\nBPB_BytesPerSector (base 10) = %d, (hexadecimal) = %x \n", boot.bytes_per_sector, boot.bytes_per_sector );
+
+    printf( "\nBPB_SectorsPerClus (base 10) = %d, (hexadecimal) = %x\n", boot.sectors_per_cluster, boot.sectors_per_cluster );
+
+    printf( "\nBPB_RsvdSecCnt (base 10) = %d, (hexadecimal) = %x\n", boot.reserved_sector_count, boot.reserved_sector_count );
+
+    printf( "\nBPB_NumFATS (base 10) = %d, (hexadecimal) = %x\n", boot.fat_count, boot.fat_count );
+
+    printf( "\nBPB_FATSz32 (base 10) = %d, (hexadecimal) = %x\n", boot.fat_sector_count, boot.fat_sector_count );
+
+}
+
+//Go back to fix just reading for the first cluster
+void stat(filesystem_t* this, const char* file_name)
+{
+    directory_t dir = filesystem_list( this );
+
+    unsigned int i;
+    for ( i = 0u; i < dir.count; i++ )
+    {
+        file_t file = dir.files[ i ];
+
+        if ( strcmp( file.name, file_name ) == 0 )
+        {
+            printf("\nAttributes: ");
+            if ( file.attrs.read_only ) 
+            {
+                printf("read only\n");
+            }
+            if( file.attrs.hidden)
+            {
+                printf("hidden\n");
+            }
+            if(file.attrs.system)
+            {
+                printf("hidden\n");
+            }
+            if(file.attrs.volume_id)
+            {
+                printf("volume id\n");
+            }
+            if(file.attrs.archive)
+            {
+                printf("archive\n");
+            }
+            
+            if(file.attrs.directory)
+            {
+                printf("directory\n");
+                printf("Size: 0\n"); 
+            }
+            else
+            {
+                printf("Size: %d\n", file.size);
+            }
+
+            printf("Starting Cluster Number: %d\n", file.cluster_low);
+             /*file.attrs*/
+            return;
+        }
+
+    }
+
+    printf("\nError: File not found\n");
+
+    free( dir.files );
+    
+}
+
+void get(filesystem_t* this, const char* file_name)
+{
+    FILE *out = fopen(file_name, "w+");   
+    read(this, 0, -1, file_name, out);
+    fclose(out);
+}
+
+void read(filesystem_t* this, int startOffset, int numOfBytes, const char* file_name, FILE* out)
+{
+    directory_t dir = filesystem_list( this );
+    unsigned int i;
+    for ( i = 0u; i < dir.count; i++ )
+    {
+        file_t file = dir.files[ i ];
+
+        if ( strcmp( file.name, file_name ) == 0 )
+        {
+            int size = file.size;
+            size /= this->_boot.sectors_per_cluster*this->_boot.bytes_per_sector;
+            char* buffer = io_clalloc(this, (size+1));
+            file_read(&file, buffer);
+
+            char*buffer2;
+
+            if( numOfBytes >= 0)
+            {
+                buffer2 = malloc(numOfBytes);
+            }
+            else
+            {
+                buffer2 = malloc(file.size);
+                numOfBytes = file.size;
+            }
+            memcpy(buffer2, buffer+startOffset, numOfBytes);
+            fprintf(out, "%s", buffer2);
+            free(buffer2);
+
+            io_free(buffer);
+        }
+    }
+}
+
+
