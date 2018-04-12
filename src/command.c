@@ -130,13 +130,15 @@ COMMAND( info, {
 
 COMMAND( stat, {
     REQUIRE_FS();
-    UNIMPLEMENTED();
 
     char* file_name;
 
     ARG( file_name, STRING );
 
-    filesystem_stat( *fs, file_name );
+    if ( !filesystem_stat( *fs, file_name ) )
+    {
+        printf( "Error: File not found\n" );
+    }
 } );
 
 COMMAND( get, {
@@ -146,7 +148,11 @@ COMMAND( get, {
 
     ARG( file_name, STRING );
 
-    filesystem_get( *fs, file_name );
+    if ( !filesystem_get( *fs, file_name ) )
+    {
+        printf( "Failed to fetch file.\n" );
+        printf( "Are you sure '%s' is a file?\n", file_name );
+    }
 } );
 
 #define DELIMITTER "/\\"
@@ -210,7 +216,11 @@ COMMAND( read, {
     ARG( start, INTEGER );
     ARG( length, INTEGER );
 
-    filesystem_read( *fs, start, length, file_name, stdout );
+    if ( !filesystem_read( *fs, start, length, file_name, stdout ) )
+    {
+        printf( "Failed to read file\n" );
+        printf( "Are you sure '%s' is a file?\n", file_name );
+    }
 } );
 
 COMMAND( volume, {

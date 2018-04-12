@@ -165,20 +165,40 @@ void filesystem_info(filesystem_t* this)
 {
     bootsector_t boot = this->_boot;
 
-    printf( "\nBPB_BytesPerSector (base 10) = %d, (hexadecimal) = %x \n", boot.bytes_per_sector, boot.bytes_per_sector );
+    printf( 
+        "BPB_BytesPerSector (base 10) = %d, (hexadecimal) = %x \n", 
+        boot.bytes_per_sector, 
+        boot.bytes_per_sector
+    );
 
-    printf( "\nBPB_SectorsPerClus (base 10) = %d, (hexadecimal) = %x\n", boot.sectors_per_cluster, boot.sectors_per_cluster );
+    printf( 
+        "BPB_SectorsPerClus (base 10) = %d, (hexadecimal) = %x\n",
+        boot.sectors_per_cluster,
+        boot.sectors_per_cluster
+    );
 
-    printf( "\nBPB_RsvdSecCnt (base 10) = %d, (hexadecimal) = %x\n", boot.reserved_sector_count, boot.reserved_sector_count );
+    printf( 
+        "BPB_RsvdSecCnt (base 10) = %d, (hexadecimal) = %x\n", 
+        boot.reserved_sector_count, 
+        boot.reserved_sector_count
+    );
 
-    printf( "\nBPB_NumFATS (base 10) = %d, (hexadecimal) = %x\n", boot.fat_count, boot.fat_count );
+    printf( 
+        "BPB_NumFATS (base 10) = %d, (hexadecimal) = %x\n", 
+        boot.fat_count, 
+        boot.fat_count 
+    );
 
-    printf( "\nBPB_FATSz32 (base 10) = %d, (hexadecimal) = %x\n", boot.fat_sector_count, boot.fat_sector_count );
+    printf(
+        "BPB_FATSz32 (base 10) = %d, (hexadecimal) = %x\n", 
+        boot.fat_sector_count,
+        boot.fat_sector_count
+    );
 
 }
 
 //Go back to fix just reading for the first cluster
-void filesystem_stat( filesystem_t* this, const char* name )
+bool filesystem_stat( filesystem_t* this, const char* name )
 {
     directory_t dir = filesystem_list( this );
 
@@ -189,7 +209,7 @@ void filesystem_stat( filesystem_t* this, const char* name )
 
         if ( file_name( &file, name ) )
         {
-            printf("\nAttributes: ");
+            printf("Attributes:\n");
             if ( file.attrs.read_only ) 
             {
                 printf("read only\n");
@@ -222,56 +242,58 @@ void filesystem_stat( filesystem_t* this, const char* name )
             }
 
             printf("Starting Cluster Number: %d\n", file.cluster_low);
-             /*file.attrs*/
-            return;
+            return true;
         }
 
     }
-
-    printf("\nError: File not found\n");
-
     free( dir.files );
-    
+    return false;
 }
 
-void filesystem_get( filesystem_t* this, const char* file_name )
+bool filesystem_get( filesystem_t* this, const char* file_name )
 {
     FILE *out = fopen(file_name, "w+");   
-    filesystem_read(this, 0, -1, file_name, out);
+    bool status = filesystem_read(this, 0, -1, file_name, out);
     fclose(out);
+    return status;
 }
 
-void filesystem_read(filesystem_t* this, int startOffset, int numOfBytes, const char* name, FILE* out)
+bool filesystem_read(filesystem_t* this, int startOffset, int numOfBytes, const char* name, FILE* out)
 {
     directory_t dir = filesystem_list( this );
+
     unsigned int i;
     for ( i = 0u; i < dir.count; i++ )
     {
         file_t file = dir.files[ i ];
 
-        if ( file_name( &file, name ) )
+        if ( !file_name( &file, name ) )
+            continue;
+        int size = file.size;
+        size /= this->_boot.sectors_per_cluster*this->_boot.bytes_per_sector;
+        char* buffer = io_clalloc(this, (size+1));
+        file_read(&file, buffer);
+
+        char*buffer2;
+
+        if( numOfBytes >= 0)
         {
-            int size = file.size;
-            size /= this->_boot.sectors_per_cluster*this->_boot.bytes_per_sector;
-            char* buffer = io_clalloc(this, (size+1));
-            file_read(&file, buffer);
-
-            char*buffer2;
-
-            if( numOfBytes >= 0)
-            {
-                buffer2 = malloc(numOfBytes);
-            }
-            else
-            {
-                buffer2 = malloc(file.size);
-                numOfBytes = file.size;
-            }
-            memcpy(buffer2, buffer+startOffset, numOfBytes);
-            fprintf(out, "%s", buffer2);
-            free(buffer2);
-
-            io_free(buffer);
+            buffer2 = malloc(numOfBytes);
         }
+        else
+        {
+            buffer2 = malloc(file.size);
+            numOfBytes = file.size;
+        }
+        memcpy(buffer2, buffer+startOffset, numOfBytes);
+        fprintf(out, "%s", buffer2);
+        free(buffer2);
+
+        io_free(buffer);
+        free( dir.files );
+        return true;
     }
+
+    free( dir.files );
+    return false;
 }

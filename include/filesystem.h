@@ -96,10 +96,10 @@ void filesystem_close(filesystem_t*);
 
 void filesystem_info(filesystem_t*);
 
-void filesystem_stat(filesystem_t*, const char* file_name);
+bool filesystem_stat(filesystem_t*, const char* file_name);
 
-void filesystem_get(filesystem_t*, const char* file_name); 
+bool filesystem_get(filesystem_t*, const char* file_name); 
 
-void filesystem_read(filesystem_t*, int startOffset, int numOfBytes, const char* file_name, FILE* out);
+bool filesystem_read(filesystem_t*, int startOffset, int numOfBytes, const char* file_name, FILE* out);
 
 #endif
