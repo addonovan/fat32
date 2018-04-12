@@ -166,31 +166,35 @@ void filesystem_info(filesystem_t* this)
     bootsector_t boot = this->_boot;
 
     printf( 
-        "BPB_BytesPerSector (base 10) = %d, (hexadecimal) = %x \n", 
+        "                    Decimal    Hexadecimal\n"
+    );
+
+    printf( 
+        "BPB_BytesPerSector  %7d    %11x\n", 
         boot.bytes_per_sector, 
         boot.bytes_per_sector
     );
 
     printf( 
-        "BPB_SectorsPerClus (base 10) = %d, (hexadecimal) = %x\n",
+        "BPB_SectorsPerClus  %7d    %11x\n",
         boot.sectors_per_cluster,
         boot.sectors_per_cluster
     );
 
     printf( 
-        "BPB_RsvdSecCnt (base 10) = %d, (hexadecimal) = %x\n", 
+        "BPB_RsvdSecCnt      %7d    %11x\n", 
         boot.reserved_sector_count, 
         boot.reserved_sector_count
     );
 
     printf( 
-        "BPB_NumFATS (base 10) = %d, (hexadecimal) = %x\n", 
+        "BPB_NumFATS         %7d    %11x\n", 
         boot.fat_count, 
         boot.fat_count 
     );
 
     printf(
-        "BPB_FATSz32 (base 10) = %d, (hexadecimal) = %x\n", 
+        "BPB_FATSz32         %7d    %11x\n", 
         boot.fat_sector_count,
         boot.fat_sector_count
     );
