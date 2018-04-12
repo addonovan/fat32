@@ -97,6 +97,6 @@ void stat(filesystem_t*, const char* file_name);
 
 void get(filesystem_t*, const char* file_name); 
 
-//void read(filesystem_t*, int postion, int numOfBytes);
+void read(filesystem_t*, int startOffset, int numOfBytes, const char* file_name, FILE* out);
 
 #endif

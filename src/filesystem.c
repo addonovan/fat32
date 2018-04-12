@@ -5,15 +5,6 @@
 #include <string.h>
 #include <file.h>
 
-//To have commands not go through after close the file if statement will be made for ex:
-/*
-if(fclose(this->_file))
-    {
-        perror("File system image must be opened first");
-        return;
-    }
-*/
-
 bool filesystem_init( filesystem_t* this, const char* file_name )
 {
     // open the image file for reading
@@ -211,41 +202,47 @@ void stat(filesystem_t* this, const char* file_name)
     
 }
 
-
-//void get(filesystem_t* this, const char* file_name)
-//{    //I don't think this is correct, need to start over
-    /*if(this->cwd && file_name)
-    {
-        directory_t dir = filesystem_list( this );
-
-        unsigned int i;
-        for ( i = 0u; i < dir.count; i++ )
-        {
-            file_t file = dir.files[ i ];
-
-            if ( file.attrs.directory )
-            {
-                if ( strcmp( file.name, file_name ) == 0)
-                {
-                    file.
-                }
-            }
-        }
-        free( dir.files );
-
-    }
-    else
-    {
-        printf("File not found");
-        return;
-    }
-    */
-//}
-
-/*
-void read(filesystem_t* this, int postion, int numOfBytes)
+void get(filesystem_t* this, const char* file_name)
 {
-
+    FILE *out = fopen(file_name, "w+");   
+    read(this, 0, -1, file_name, out);
+    fclose(out);
 }
-*/
+
+void read(filesystem_t* this, int startOffset, int numOfBytes, const char* file_name, FILE* out)
+{
+    directory_t dir = filesystem_list( this );
+    printf( "dir.count = %d\n", dir.count );
+    unsigned int i;
+    for ( i = 0u; i < dir.count; i++ )
+    {
+        file_t file = dir.files[ i ];
+
+        printf( "%s!\n", file.name );
+        if ( strcmp( file.name, file_name ) == 0 )
+        {
+            int size = file.size;
+            size /= this->_boot.sectors_per_cluster*this->_boot.bytes_per_sector;
+            char* buffer = io_clalloc(this, (size+1));
+            file_read(&file, buffer);
+
+            char*buffer2;
+
+            if( numOfBytes >= 0)
+            {
+                buffer2 = malloc(numOfBytes);
+            }
+            else
+            {
+                buffer2 = malloc(file.size);
+            }
+            memcpy(buffer2, buffer+startOffset, numOfBytes);
+            fprintf(out, "%s", buffer2);
+            free(buffer2);
+
+            io_free(buffer);
+        }
+    }
+}
+
 

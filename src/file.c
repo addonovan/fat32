@@ -99,11 +99,31 @@ bool file_displayable( file_t* this )
     return false;
 }
 
-bool file_read( file_t* this, void* buf )
+bool file_read( file_t* this, void* buff )
 {
+    /*
     return io_read_cluster(
         this->fs,
         this->cluster_low,
         buf
     );
+    */
+
+    cluster_t cluster = this->cluster_low;
+
+    do
+    {
+        if(!io_read_cluster(this->fs, cluster, buff))
+        {
+            return false;
+        }
+
+        buff+=(this->fs->_boot.sectors_per_cluster*this->fs->_boot.bytes_per_sector);
+
+    }
+    while(io_next_cluster(this->fs, &cluster));
+
+    return true;
+
 }
+
