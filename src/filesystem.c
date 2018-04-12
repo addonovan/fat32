@@ -11,16 +11,20 @@ bool filesystem_init( filesystem_t* this, const char* file_name )
     this->_file = fopen( file_name, "r" );
     if ( this->_file == NULL )
     {
+#ifndef TEST
         fprintf( stderr, "Failed to open '%s' for read\n", file_name );
         perror( "fopen()" );
+#endif
         return false;
     }
 
     // load the bootsystem/fat32 metadata
     if ( !bootsector_init( &this->_boot, this->_file ) )
     {
+#ifndef TEST
         fprintf( stderr, "Failed to read fat32 bootsector!\n" );
         fprintf( stderr, "Are you sure this is a valid fat32 image?\n" );
+#endif
         return false;
     }
 
@@ -211,45 +215,48 @@ bool filesystem_stat( filesystem_t* this, const char* name )
     {
         file_t file = dir.files[ i ];
 
-        if ( file_name( &file, name ) )
-        {
-            printf("Attributes:\n");
-            if ( file.attrs.read_only ) 
-            {
-                printf("read only\n");
-            }
-            if( file.attrs.hidden)
-            {
-                printf("hidden\n");
-            }
-            if(file.attrs.system)
-            {
-                printf("hidden\n");
-            }
-            if(file.attrs.volume_id)
-            {
-                printf("volume id\n");
-            }
-            if(file.attrs.archive)
-            {
-                printf("archive\n");
-            }
-            
-            if(file.attrs.directory)
-            {
-                printf("directory\n");
-                printf("Size: 0\n"); 
-            }
-            else
-            {
-                printf("Size: %d\n", file.size);
-            }
+        if ( !file_name( &file, name ) )
+            continue;
 
-            printf("Starting Cluster Number: %d\n", file.cluster_low);
-            return true;
+#ifndef TEST
+        printf("Attributes:\n");
+        if ( file.attrs.read_only ) 
+        {
+            printf("read only\n");
+        }
+        if( file.attrs.hidden)
+        {
+            printf("hidden\n");
+        }
+        if(file.attrs.system)
+        {
+            printf("hidden\n");
+        }
+        if(file.attrs.volume_id)
+        {
+            printf("volume id\n");
+        }
+        if(file.attrs.archive)
+        {
+            printf("archive\n");
+        }
+        
+        if(file.attrs.directory)
+        {
+            printf("directory\n");
+            printf("Size: 0\n"); 
+        }
+        else
+        {
+            printf("Size: %d\n", file.size);
         }
 
+        printf("Starting Cluster Number: %d\n", file.cluster_low);
+#endif
+        free( dir.files );
+        return true;
     }
+
     free( dir.files );
     return false;
 }
@@ -262,7 +269,13 @@ bool filesystem_get( filesystem_t* this, const char* file_name )
     return status;
 }
 
-bool filesystem_read(filesystem_t* this, int startOffset, int numOfBytes, const char* name, FILE* out)
+bool filesystem_read(
+    filesystem_t* this, 
+    offset_t startOffset, 
+    int numOfBytes, 
+    const char* name, 
+    FILE* out
+)
 {
     directory_t dir = filesystem_list( this );
 

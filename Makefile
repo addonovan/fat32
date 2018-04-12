@@ -32,9 +32,9 @@ TEST_BINS   := $(patsubst $(TEST)/%.$(EXT), $(BIN)/$(TEST_FMT), $(TEST_SRCS))
 # EXECUTABLES                                                                  #
 ################################################################################
 
-test: build $(TEST_BINS) $(OBJS) $(TEST_OBJS)
+test: CFLAGS+=-DTEST
+test: $(TEST_BINS) $(OBJS) $(TEST_OBJS)
 	@for file in $(TEST_BINS); do\
-		echo "$$file...";\
 		./$$file;\
 		if [ "$$?" != "0" ]; then\
 			echo "";\
