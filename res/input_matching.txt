@@ -1,6 +1,0 @@
-test 1 2 3 4
-open res/fat32.img
-close
-stat FOLDERA
-stat num.txt
-read num.txt 0 100
