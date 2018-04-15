@@ -226,6 +226,7 @@ COMMAND( read, {
         printf( "Failed to read file\n" );
         printf( "Are you sure '%s' is a file?\n", file_name );
     }
+    
 } );
 
 COMMAND( volume, {

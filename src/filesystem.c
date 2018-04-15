@@ -219,7 +219,7 @@ bool filesystem_stat( filesystem_t* this, const char* name )
             continue;
 
 #ifndef TEST
-        printf("Attributes:\n");
+        printf("Attributes: ");
         if ( file.attrs.read_only ) 
         {
             printf("read only\n");
@@ -304,6 +304,7 @@ bool filesystem_read(
         }
         memcpy(buffer2, buffer+startOffset, numOfBytes);
         bool status = fwrite( buffer2, numOfBytes, 1, out ) == 1;
+        printf("\n");
         free(buffer2);
 
         io_free(buffer);
